@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'menu.dart';
 void main() {
   runApp(const MyApp());
 }
@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+  const MyHomePage({Key? key, required this.title}) : super(key: key);
   final String title;
 
   @override
@@ -30,6 +30,13 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  void _navigateToMenuPage() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => MenuPage()),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,26 +51,32 @@ class _MyHomePageState extends State<MyHomePage> {
       drawer: Drawer(),
       body: ListView(
         children: [
-          Container(
-            color: Color(0xFFD9D9D9),
-            child: ListTile(
-              leading: Container(
-                width: 60,
-                decoration: BoxDecoration(
+          GestureDetector(
+            onTap: _navigateToMenuPage,
+            child: Container(
+              color: Color(0xFFD9D9D9),
+              child: ListTile(
+                leading: Container(
+                  width: 60,
+                  decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(10)),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                title: Text("Tomyum Kung"),
+                subtitle: Text("Thai Cusine"),
               ),
-              title: Text("Tomyum Kung"),
-              subtitle: Text("Thai Cusine"),
             ),
           )
         ],
       ),
       floatingActionButton:
-          FloatingActionButton(onPressed: () {}, child: Icon(Icons.add)),
+      FloatingActionButton(onPressed: () {}, child: Icon(Icons.add)),
     );
   }
 }
+
+
 
 class MainAppBar extends StatefulWidget {
   const MainAppBar({super.key, required this.drawerKey});
