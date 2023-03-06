@@ -1,183 +1,46 @@
 import 'package:flutter/material.dart';
-
+import 'shopping_list.dart';
+import 'instruction_slide.dart';
+import 'edit_recipe.dart';
 class MenuPage extends StatefulWidget {
-  const MenuPage({Key? key}) : super(key: key);
+  final String name;
+  final List<dynamic> tags;
+  final String imageUrl;
+  final List<dynamic> ingredients;
+  final List<dynamic> instructions;
+
+
+  const MenuPage({
+    Key? key,
+    required this.name,
+    required this.tags,
+    required this.imageUrl,
+    required this.ingredients,
+    required this.instructions,
+  }) : super(key: key);
 
   @override
   _MenuPageState createState() => _MenuPageState();
 }
 
-class MenuPageInfo extends StatefulWidget {
-  const MenuPageInfo({Key? key}) : super(key: key);
-
-  @override
-  _MenuPageInfoState createState() => _MenuPageInfoState();
-}
-
-
-class _MenuPageInfoState extends State<MenuPageInfo> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          const SizedBox(height: 20),
-          Center(
-            child: Container(
-              width: 200,
-              height: 200,
-              decoration: BoxDecoration(
-                color: Colors.grey[800],
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: const Center(
-                child: Text(
-                  "Image goes here",
-                  style: TextStyle(fontSize: 24, color: Colors.white),
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(height: 20),
-          Padding(
-            padding: const EdgeInsets.only(left: 20),
-            child: Row(
-              children: [
-                Container(
-                  width: 70,
-                  height: 50,
-                  decoration: BoxDecoration(
-                    color: Colors.grey[400],
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                  child: const Center(
-                    child: Text(
-                      "Thai Crusine",
-                      style: TextStyle(fontSize: 10, color: Colors.black),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 10),
-          const Padding(
-            padding: EdgeInsets.only(left: 20),
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                "Ingredient",
-                style: TextStyle(fontSize: 16, color: Colors.black),
-              ),
-            ),
-          ),
-          const SizedBox(height: 10),
-          Row(
-            children: [
-              const SizedBox(width: 20),
-              Icon(Icons.circle, color: Colors.grey[400], size: 12),
-              const SizedBox(width: 10),
-              const Text(
-                "Ingredient 1",
-                style: TextStyle(fontSize: 12, color: Colors.black),
-              ),
-            ],
-          ),
-          Row(
-            children: [
-              const SizedBox(width: 20),
-              Icon(Icons.circle, color: Colors.grey[400], size: 12),
-              const SizedBox(width: 10),
-              const Text(
-                "Ingredient 2",
-                style: TextStyle(fontSize: 12, color: Colors.black),
-              ),
-            ],
-          ),
-          Row(
-            children: [
-              const SizedBox(width: 20),
-              Icon(Icons.circle, color: Colors.grey[400], size: 12),
-              const SizedBox(width: 10),
-              const Text(
-                "Ingredient 3",
-                style: TextStyle(fontSize: 12, color: Colors.black),
-              ),
-            ],
-          ),
-          Row(
-            children: [
-              const SizedBox(width: 20),
-              Icon(Icons.circle, color: Colors.grey[400], size: 12),
-              const SizedBox(width: 10),
-              const Text(
-                "Ingredient 4",
-                style: TextStyle(fontSize: 12, color: Colors.black),
-              ),
-            ],
-          ),
-          Row(
-            children: [
-              const SizedBox(width: 20),
-              Icon(Icons.circle, color: Colors.grey[400], size: 12),
-              const SizedBox(width: 10),
-              const Text(
-                "Ingredient 5",
-                style: TextStyle(fontSize: 12, color: Colors.black),
-              ),
-            ],
-          ),
-          const SizedBox(height: 10),
-          const Padding(
-            padding: EdgeInsets.only(left: 20),
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                "Instruction",
-                style: TextStyle(fontSize: 16, color: Colors.black),
-              ),
-            ),
-          ),
-          const Row(
-            children: [
-              SizedBox(width: 20),
-              SizedBox(width: 10),
-              Text(
-                "1. One thing",
-                style: TextStyle(fontSize: 12, color: Colors.black),
-              ),
-            ],
-          ),
-          const Row(
-            children: [
-              SizedBox(width: 20),
-              SizedBox(width: 10),
-              Text(
-                "2. Damn bro",
-                style: TextStyle(fontSize: 12, color: Colors.black),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-}
-
 class _MenuPageState extends State<MenuPage> {
+
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: const Text(
-          "Tomyum Kung",
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-        ),
+        title: Text(widget.name),
         actions: [
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => EditRecipePage()),
+              );
+            },
             icon: const Icon(Icons.edit),
           ),
           IconButton(
@@ -186,8 +49,163 @@ class _MenuPageState extends State<MenuPage> {
           ),
         ],
       ),
-      body: const Center(
-        child: MenuPageInfo(),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          const SizedBox(height: 20),
+          Align(
+            alignment: Alignment.center,
+            child: Container(
+              width: 250,
+              height: 250,
+              decoration: BoxDecoration(
+                color: Colors.grey[800],
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: Image.network(
+                  widget.imageUrl,
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 10),
+          Align(
+            alignment: Alignment.center,
+            child: Column(
+              children: [
+                const SizedBox(height: 10),
+                Wrap(
+                  spacing: 8.0,
+                  runSpacing: 4.0,
+                  children: List.generate(
+                    widget.tags.length,
+                        (index) => Container(
+                      padding:
+                      const EdgeInsets.symmetric(vertical: 2),
+                      decoration: BoxDecoration(
+                        color: Colors.grey[300],
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Text(
+                        widget.tags[index],
+                        style: const TextStyle(
+                          fontSize: 16,
+                          color: Colors.black87,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 15),
+                const Text(
+                  "Ingredients",
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold, color: Colors.black),
+                ),
+                const SizedBox(height: 15),
+                Wrap(
+                  direction: Axis.vertical,
+                  spacing: 4.0,
+                  runSpacing: 4.0,
+                  children: List.generate(
+                    widget.ingredients.length,
+                        (index) => Container(
+                      child: Text(
+                        widget.ingredients[index],
+                        style: const TextStyle(
+                          fontSize: 16,
+                          color: Colors.black87,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 15),
+                const Text(
+                  "Instructions",
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold, color: Colors.black),
+                ),
+                const SizedBox(height: 15),
+                Wrap(
+                  direction: Axis.vertical,
+                  spacing: 4.0,
+                  children: List.generate(
+                    widget.tags.length,
+                        (index) => Container(
+                      padding: const EdgeInsets.symmetric(vertical: 1),
+                      child: Text(
+
+                        '${index + 1}.' + widget.instructions[index],
+                        style: const TextStyle(
+                          fontSize: 16,
+                          color: Colors.black87,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Row(
+            children: [
+              Expanded(
+                child: Divider(
+                  height: 40,
+                  thickness: 1,
+                  indent: 20,
+                  endIndent: 20,
+                ),
+              ),
+            ],
+          ),
+
+          // Add icons below the divider
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => ShoppingCartScreen(ingredients: widget.ingredients)),
+                  );
+                },
+                child: Container(
+                  width: 60,
+                  height: 30,
+                  decoration: BoxDecoration(
+                    color: Colors.grey[300],
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  child: Icon(Icons.shopping_cart),
+                ),
+              ),
+
+              InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => InstruntionSlideScreen(instructions: widget.instructions)),
+                  );
+                },
+                child: Container(
+                  width: 60,
+                  height: 30,
+                  decoration: BoxDecoration(
+                    color: Colors.grey[300],
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  child: Icon(Icons.play_arrow),
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
