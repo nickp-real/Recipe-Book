@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-
 class AddRecipePage extends StatefulWidget {
-
   const AddRecipePage({Key? key}) : super(key: key);
 
   @override
@@ -19,7 +17,6 @@ class _AddRecipePageState extends State<AddRecipePage> {
   final _tagControllers = <TextEditingController>[];
   final _instructionControllers = <TextEditingController>[];
 
-
   void _saveRecipe() async {
     final name = _nameController.text;
     final instructions = _instructionControllers.map((c) => c.text).toList();
@@ -33,213 +30,131 @@ class _AddRecipePageState extends State<AddRecipePage> {
       'imageUrl': imageUrl,
       'tags': tags,
       'ingredients': ingredients,
-    });
-
-    Navigator.pop(context);
+    }).then((_) => Navigator.pop(context));
   }
-
-  void _addTag() {
-    setState(() {
-      _tagControllers.add(TextEditingController());
-    });
-  }
-
-  void _removeTag(int index) {
-    setState(() {
-      _tagControllers.removeAt(index);
-    });
-  }
-
-  void _addIngredient() {
-    setState(() {
-      _ingredientControllers.add(TextEditingController());
-    });
-  }
-
-  void _removeIngredient(int index) {
-    setState(() {
-      _ingredientControllers.removeAt(index);
-    });
-  }
-
-  void _addInstruction() {
-    setState(() {
-      _instructionControllers.add(TextEditingController());
-    });
-  }
-
-  void _removeInstruction(int index) {
-    setState(() {
-      _instructionControllers.removeAt(index);
-    });
-  }
-
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Add Recipe'),
-      ),
-      body: SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              TextFormField(
-                controller: _nameController,
-                decoration: const InputDecoration(labelText: 'Name'),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter a name';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 16),
-              Text('Category', style: Theme.of(context).textTheme.subtitle1),
-              const SizedBox(height: 8),
-              ListView.builder(
-                shrinkWrap: true,
-                itemCount: _tagControllers.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return Row(
-                    children: [
-                      Expanded(
-                        child: TextFormField(
-                          controller: _tagControllers[index],
-                          decoration:
-                          InputDecoration(labelText: 'Category ${index + 1}'),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter Category';
-                            }
-                            return null;
-                          },
-                        ),
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.remove),
-                        onPressed: () => _removeTag(index),
-                      ),
-                    ],
-                  );
-                },
-              ),
-
-              const SizedBox(height: 8),
-              ElevatedButton.icon(
-                onPressed: _addTag,
-                icon: Icon(Icons.add),
-                label: const Text('Add Category'),
-              ),
-
-
-              const SizedBox(height: 16),
-              Text('Ingredient', style: Theme.of(context).textTheme.subtitle1),
-              const SizedBox(height: 8),
-              ListView.builder(
-                shrinkWrap: true,
-                itemCount: _ingredientControllers.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return Row(
-                    children: [
-                      Expanded(
-                        child: TextFormField(
-                          controller: _ingredientControllers[index],
-                          decoration:
-                          InputDecoration(labelText: 'Ingredient ${index + 1}'),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter Ingredient';
-                            }
-                            return null;
-                          },
-                        ),
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.remove),
-                        onPressed: () => _removeIngredient(index),
-                      ),
-                    ],
-                  );
-                },
-              ),
-
-              const SizedBox(height: 8),
-              ElevatedButton.icon(
-                onPressed: _addIngredient,
-                icon: Icon(Icons.add),
-                label: const Text('Add Ingredient'),
-              ),
-
-              const SizedBox(height: 16),
-              Text('Instruction', style: Theme.of(context).textTheme.subtitle1),
-              const SizedBox(height: 8),
-              ListView.builder(
-                shrinkWrap: true,
-                itemCount: _instructionControllers.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return Row(
-                    children: [
-                      Expanded(
-                        child: TextFormField(
-                          controller: _instructionControllers[index],
-                          decoration:
-                          InputDecoration(labelText: 'Instruction ${index + 1}'),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter Instruction';
-                            }
-                            return null;
-                          },
-                        ),
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.remove),
-                        onPressed: () => _removeInstruction(index),
-                      ),
-                    ],
-                  );
-                },
-              ),
-
-              const SizedBox(height: 8),
-              ElevatedButton.icon(
-                onPressed: _addInstruction,
-                icon: Icon(Icons.add),
-                label: const Text('Add Instruction'),
-              ),
-
-
-
-              TextFormField(
-                controller: _imageUrlController,
-                decoration: const InputDecoration(labelText: 'Image URL'),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter an image URL';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    _saveRecipe();
-                  }
-                },
-                child: const Text('Save Recipe'),
-              ),
-            ],
-          ),
+        appBar: AppBar(
+          title: const Text('Add Recipe'),
         ),
-      ),
-      )
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  TextFormField(
+                    controller: _nameController,
+                    decoration: const InputDecoration(labelText: 'Name'),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter a name';
+                      }
+                      return null;
+                    },
+                  ),
+                  TextFormField(
+                    controller: _imageUrlController,
+                    decoration: const InputDecoration(labelText: 'Image URL'),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter an image URL';
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  ListForm(fields: _tagControllers, name: 'Category'),
+                  const SizedBox(height: 16),
+                  ListForm(fields: _ingredientControllers, name: 'Ingredient'),
+                  const SizedBox(height: 16),
+                  ListForm(
+                      fields: _instructionControllers, name: 'Instruction'),
+                  const SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: () {
+                      if (_formKey.currentState!.validate()) {
+                        _saveRecipe();
+                      }
+                    },
+                    child: const Text('Save Recipe'),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ));
+  }
+}
+
+class ListForm extends StatefulWidget {
+  const ListForm({required this.fields, required this.name, super.key});
+
+  final List<TextEditingController> fields;
+  final String name;
+
+  @override
+  State<ListForm> createState() => _ListFormState();
+}
+
+class _ListFormState extends State<ListForm> {
+  void _addField() {
+    setState(() {
+      widget.fields.add(TextEditingController());
+    });
+  }
+
+  void _removeField(int index) {
+    setState(() {
+      widget.fields.removeAt(index);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(widget.name, style: Theme.of(context).textTheme.subtitle1),
+        const SizedBox(height: 8),
+        ListView.builder(
+          shrinkWrap: true,
+          itemCount: widget.fields.length,
+          itemBuilder: (BuildContext context, int index) {
+            return Row(
+              children: [
+                Expanded(
+                  child: TextFormField(
+                    controller: widget.fields[index],
+                    decoration: InputDecoration(
+                        labelText: '${widget.name} ${index + 1}'),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter ${widget.name}';
+                      }
+                      return null;
+                    },
+                  ),
+                ),
+                IconButton(
+                  icon: Icon(Icons.remove),
+                  onPressed: () => _removeField(index),
+                ),
+              ],
+            );
+          },
+        ),
+        const SizedBox(height: 8),
+        ElevatedButton.icon(
+          onPressed: _addField,
+          icon: Icon(Icons.add),
+          label: Text('Add ${widget.name}'),
+        ),
+      ],
     );
   }
 }

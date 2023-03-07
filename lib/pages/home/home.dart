@@ -61,15 +61,18 @@ class RecipeList extends StatelessWidget {
           );
         }
 
-        return ListView.builder(
-          itemCount: snapshot.data!.docs.length,
-          itemBuilder: (BuildContext context, int index) {
-            Recipe data = Recipe.fromJson(
-                snapshot.data!.docs[index].data() as Map<String, dynamic>);
-            final tags = data.tags;
-            final image = data.imageUrl;
-            return RecipeTile(data: data, image: image, tags: tags);
-          },
+        return Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: ListView.builder(
+            itemCount: snapshot.data!.docs.length,
+            itemBuilder: (BuildContext context, int index) {
+              Recipe data = Recipe.fromJson(
+                  snapshot.data!.docs[index].data() as Map<String, dynamic>);
+              final tags = data.tags;
+              final image = data.imageUrl;
+              return RecipeTile(data: data, image: image, tags: tags);
+            },
+          ),
         );
       },
     );
@@ -105,39 +108,37 @@ class RecipeTile extends StatelessWidget {
       );
     }
 
-    return GestureDetector(
-      onTap: () => toMenu(data),
-      child: Card(
-        child: ListTile(
-          leading: Container(
-            width: 45,
-            height: 45,
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: NetworkImage(image),
-                fit: BoxFit.cover,
-              ),
-              borderRadius: BorderRadius.circular(10),
+    return Card(
+      child: ListTile(
+        leading: Container(
+          width: 45,
+          height: 45,
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: NetworkImage(image),
+              fit: BoxFit.cover,
             ),
-          ),
-          title: Text(
-            data.name,
-            style: const TextStyle(
-                fontWeight: FontWeight.bold, color: Colors.black),
-          ),
-          subtitle: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: tags
-                .map((tag) => Padding(
-                      padding: const EdgeInsets.only(right: 8.0),
-                      child: Text(
-                        tag,
-                        style: TextStyle(color: Colors.black),
-                      ),
-                    ))
-                .toList(),
+            borderRadius: BorderRadius.circular(10),
           ),
         ),
+        title: Text(
+          data.name,
+          style:
+              const TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+        ),
+        subtitle: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: tags
+              .map((tag) => Padding(
+                    padding: const EdgeInsets.only(right: 8.0),
+                    child: Text(
+                      tag,
+                      style: const TextStyle(color: Colors.black),
+                    ),
+                  ))
+              .toList(),
+        ),
+        onTap: () => toMenu(data),
       ),
     );
   }
