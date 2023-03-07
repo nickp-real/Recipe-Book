@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'shopping_list.dart';
-import 'instruction_slide.dart';
-import 'edit_recipe.dart';
+import 'package:receipe_book/pages/edit/edit_recipe.dart';
+import 'package:receipe_book/pages/instruction/instruction_slide.dart';
+import 'package:receipe_book/pages/shopping/shopping_list.dart';
+
 class MenuPage extends StatefulWidget {
   final String name;
   final List<dynamic> tags;
   final String imageUrl;
   final List<dynamic> ingredients;
   final List<dynamic> instructions;
-
 
   const MenuPage({
     Key? key,
@@ -24,9 +24,6 @@ class MenuPage extends StatefulWidget {
 }
 
 class _MenuPageState extends State<MenuPage> {
-
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -82,9 +79,8 @@ class _MenuPageState extends State<MenuPage> {
                   runSpacing: 4.0,
                   children: List.generate(
                     widget.tags.length,
-                        (index) => Container(
-                      padding:
-                      const EdgeInsets.symmetric(vertical: 2),
+                    (index) => Container(
+                      padding: const EdgeInsets.symmetric(vertical: 2),
                       decoration: BoxDecoration(
                         color: Colors.grey[300],
                         borderRadius: BorderRadius.circular(10),
@@ -112,7 +108,7 @@ class _MenuPageState extends State<MenuPage> {
                   runSpacing: 4.0,
                   children: List.generate(
                     widget.ingredients.length,
-                        (index) => Container(
+                    (index) => Container(
                       child: Text(
                         widget.ingredients[index],
                         style: const TextStyle(
@@ -135,10 +131,9 @@ class _MenuPageState extends State<MenuPage> {
                   spacing: 4.0,
                   children: List.generate(
                     widget.tags.length,
-                        (index) => Container(
+                    (index) => Container(
                       padding: const EdgeInsets.symmetric(vertical: 1),
                       child: Text(
-
                         '${index + 1}.' + widget.instructions[index],
                         style: const TextStyle(
                           fontSize: 16,
@@ -172,7 +167,9 @@ class _MenuPageState extends State<MenuPage> {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => ShoppingCartScreen(ingredients: widget.ingredients)),
+                    MaterialPageRoute(
+                        builder: (context) => ShoppingCartScreen(
+                            ingredients: widget.ingredients)),
                   );
                 },
                 child: Container(
@@ -185,12 +182,13 @@ class _MenuPageState extends State<MenuPage> {
                   child: Icon(Icons.shopping_cart),
                 ),
               ),
-
               InkWell(
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => InstruntionSlideScreen(instructions: widget.instructions)),
+                    MaterialPageRoute(
+                        builder: (context) => InstruntionSlideScreen(
+                            instructions: widget.instructions)),
                   );
                 },
                 child: Container(

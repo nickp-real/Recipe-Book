@@ -18,11 +18,13 @@ class _InstruntionSlideScreenState extends State<InstruntionSlideScreen> {
   @override
   void initState() {
     super.initState();
-    decorations = List.generate(widget.instructions.length, (_) => BoxDecoration(
-      color: Colors.white,
-      border: Border.all(color: Colors.grey),
-      borderRadius: BorderRadius.circular(10),
-    ));
+    decorations = List.generate(
+        widget.instructions.length,
+        (_) => BoxDecoration(
+              color: Colors.white,
+              border: Border.all(color: Colors.grey),
+              borderRadius: BorderRadius.circular(10),
+            ));
   }
 
   @override
@@ -93,3 +95,4 @@ class _InstruntionSlideScreenState extends State<InstruntionSlideScreen> {
     );
   }
 }
+
