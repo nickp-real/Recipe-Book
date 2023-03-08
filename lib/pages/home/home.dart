@@ -1,5 +1,5 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:receipe_book/model/recipe.dart';
 import 'package:receipe_book/pages/add/add_recipe.dart';
 import 'package:receipe_book/pages/menu/menu.dart';
@@ -41,6 +41,45 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
+// Download Page
+// class RecipeList extends StatelessWidget {
+//   const RecipeList({
+//     super.key,
+//   });
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return StreamBuilder<QuerySnapshot>(
+//       stream: FirebaseFirestore.instance.collectionGroup('recipes').snapshots(),
+//       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+//         if (snapshot.hasError) {
+//           return const Text('Something went wrong');
+//         }
+
+//         if (snapshot.connectionState == ConnectionState.waiting) {
+//           return const Center(
+//             child: CircularProgressIndicator(),
+//           );
+//         }
+
+//         return Padding(
+//           padding: const EdgeInsets.all(8.0),
+//           child: ListView.builder(
+//             itemCount: snapshot.data!.docs.length,
+//             itemBuilder: (BuildContext context, int index) {
+//               Recipe data = Recipe.fromJson(
+//                   snapshot.data!.docs[index].data() as Map<String, dynamic>);
+//               final tags = data.tags;
+//               final image = data.imageUrl;
+//               return RecipeTile(data: data, image: image, tags: tags);
+//             },
+//           ),
+//         );
+//       },
+//     );
+//   }
+// }
+
 class RecipeList extends StatelessWidget {
   const RecipeList({
     super.key,
@@ -48,32 +87,24 @@ class RecipeList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<QuerySnapshot>(
-      stream: FirebaseFirestore.instance.collectionGroup('recipes').snapshots(),
-      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-        if (snapshot.hasError) {
-          return const Text('Something went wrong');
-        }
-
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        }
-
-        return Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: ListView.builder(
-            itemCount: snapshot.data!.docs.length,
-            itemBuilder: (BuildContext context, int index) {
-              Recipe data = Recipe.fromJson(
-                  snapshot.data!.docs[index].data() as Map<String, dynamic>);
-              final tags = data.tags;
-              final image = data.imageUrl;
-              return RecipeTile(data: data, image: image, tags: tags);
-            },
-          ),
-        );
+    return Consumer<RecipeModel>(
+      builder: (_, recipe, __) {
+        return FutureBuilder(
+            future: recipe.fetch(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: ListView.builder(
+                      itemCount: snapshot.data!.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        Recipe data = snapshot.data![index];
+                        return RecipeTile(data: data);
+                      },
+                    ));
+              }
+              return const Center(child: CircularProgressIndicator());
+            });
       },
     );
   }
@@ -83,13 +114,9 @@ class RecipeTile extends StatelessWidget {
   const RecipeTile({
     super.key,
     required this.data,
-    required this.image,
-    required this.tags,
   });
 
   final Recipe data;
-  final String image;
-  final List tags;
 
   @override
   Widget build(BuildContext context) {
@@ -115,7 +142,7 @@ class RecipeTile extends StatelessWidget {
           height: 45,
           decoration: BoxDecoration(
             image: DecorationImage(
-              image: NetworkImage(image),
+              image: NetworkImage(data.imageUrl),
               fit: BoxFit.cover,
             ),
             borderRadius: BorderRadius.circular(10),
@@ -128,7 +155,7 @@ class RecipeTile extends StatelessWidget {
         ),
         subtitle: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: tags
+          children: data.tags
               .map((tag) => Padding(
                     padding: const EdgeInsets.only(right: 8.0),
                     child: Text(

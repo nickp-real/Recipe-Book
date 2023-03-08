@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:provider/provider.dart';
+import 'package:receipe_book/model/recipe.dart';
 
 class AddRecipePage extends StatefulWidget {
   const AddRecipePage({Key? key}) : super(key: key);
 
   @override
-  _AddRecipePageState createState() => _AddRecipePageState();
+  State<AddRecipePage> createState() => _AddRecipePageState();
 }
 
 class _AddRecipePageState extends State<AddRecipePage> {
@@ -17,76 +19,92 @@ class _AddRecipePageState extends State<AddRecipePage> {
   final _tagControllers = <TextEditingController>[];
   final _instructionControllers = <TextEditingController>[];
 
-  void _saveRecipe() async {
-    final name = _nameController.text;
-    final instructions = _instructionControllers.map((c) => c.text).toList();
-    final imageUrl = _imageUrlController.text;
-    final tags = _ingredientControllers.map((c) => c.text).toList();
-    final ingredients = _ingredientControllers.map((c) => c.text).toList();
-
-    await FirebaseFirestore.instance.collection('recipes').add({
-      'name': name,
-      'instructions': instructions,
-      'imageUrl': imageUrl,
-      'tags': tags,
-      'ingredients': ingredients,
-    }).then((_) => Navigator.pop(context));
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
           title: const Text('Add Recipe'),
         ),
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  TextFormField(
-                    controller: _nameController,
-                    decoration: const InputDecoration(labelText: 'Name'),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter a name';
-                      }
-                      return null;
-                    },
+        body: Consumer<RecipeModel>(
+          builder: (_, recipes, __) {
+            void saveRecipe() async {
+              final name = _nameController.text;
+              final instructions =
+                  _instructionControllers.map((c) => c.text).toList();
+              final imageUrl = _imageUrlController.text;
+              final tags = _ingredientControllers.map((c) => c.text).toList();
+              final ingredients =
+                  _ingredientControllers.map((c) => c.text).toList();
+
+              final recipe =
+                  Recipe(name, imageUrl, tags, instructions, ingredients);
+              recipes.add(recipe);
+
+              ScaffoldMessenger.of(context)
+                  .showSnackBar(SnackBar(content: Text("Add $name success.")));
+
+              // await FirebaseFirestore.instance.collection('recipes').add({
+              //   'name': name,
+              //   'instructions': instructions,
+              //   'imageUrl': imageUrl,
+              //   'tags': tags,
+              //   'ingredients': ingredients,
+              // }).then((_) => Navigator.pop(context));
+              Navigator.pop(context);
+            }
+
+            return SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      TextFormField(
+                        controller: _nameController,
+                        decoration: const InputDecoration(labelText: 'Name'),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter a name';
+                          }
+                          return null;
+                        },
+                      ),
+                      TextFormField(
+                        controller: _imageUrlController,
+                        decoration:
+                            const InputDecoration(labelText: 'Image URL'),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter an image URL';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 16),
+                      ListForm(fields: _tagControllers, name: 'Category'),
+                      const SizedBox(height: 16),
+                      ListForm(
+                          fields: _ingredientControllers, name: 'Ingredient'),
+                      const SizedBox(height: 16),
+                      ListForm(
+                          fields: _instructionControllers, name: 'Instruction'),
+                      const SizedBox(height: 16),
+                      ElevatedButton(
+                        onPressed: () {
+                          if (_formKey.currentState!.validate()) {
+                            saveRecipe();
+                          }
+                        },
+                        child: const Text('Save Recipe'),
+                      ),
+                    ],
                   ),
-                  TextFormField(
-                    controller: _imageUrlController,
-                    decoration: const InputDecoration(labelText: 'Image URL'),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter an image URL';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 16),
-                  ListForm(fields: _tagControllers, name: 'Category'),
-                  const SizedBox(height: 16),
-                  ListForm(fields: _ingredientControllers, name: 'Ingredient'),
-                  const SizedBox(height: 16),
-                  ListForm(
-                      fields: _instructionControllers, name: 'Instruction'),
-                  const SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        _saveRecipe();
-                      }
-                    },
-                    child: const Text('Save Recipe'),
-                  ),
-                ],
+                ),
               ),
-            ),
-          ),
+            );
+          },
         ));
   }
 }
@@ -141,7 +159,7 @@ class _ListFormState extends State<ListForm> {
                   ),
                 ),
                 IconButton(
-                  icon: Icon(Icons.remove),
+                  icon: const Icon(Icons.remove),
                   onPressed: () => _removeField(index),
                 ),
               ],
@@ -151,7 +169,7 @@ class _ListFormState extends State<ListForm> {
         const SizedBox(height: 8),
         ElevatedButton.icon(
           onPressed: _addField,
-          icon: Icon(Icons.add),
+          icon: const Icon(Icons.add),
           label: Text('Add ${widget.name}'),
         ),
       ],
