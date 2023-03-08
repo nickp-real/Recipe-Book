@@ -98,8 +98,8 @@ class RecipeList extends StatelessWidget {
                     child: ListView.builder(
                       itemCount: snapshot.data!.length,
                       itemBuilder: (BuildContext context, int index) {
-                        Recipe data = snapshot.data![index];
-                        return RecipeTile(data: data);
+                        Recipe recipe = snapshot.data![index];
+                        return RecipeTile(recipe: recipe);
                       },
                     ));
               }
@@ -113,23 +113,19 @@ class RecipeList extends StatelessWidget {
 class RecipeTile extends StatelessWidget {
   const RecipeTile({
     super.key,
-    required this.data,
+    required this.recipe,
   });
 
-  final Recipe data;
+  final Recipe recipe;
 
   @override
   Widget build(BuildContext context) {
-    void toMenu(Recipe data) {
+    void toMenu(Recipe recipe) {
       Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => MenuPage(
-            name: data.name,
-            tags: data.tags,
-            imageUrl: data.imageUrl,
-            ingredients: data.ingredients,
-            instructions: data.instructions,
+            recipe: recipe,
           ),
         ),
       );
@@ -142,20 +138,20 @@ class RecipeTile extends StatelessWidget {
           height: 45,
           decoration: BoxDecoration(
             image: DecorationImage(
-              image: NetworkImage(data.imageUrl),
+              image: NetworkImage(recipe.imageUrl),
               fit: BoxFit.cover,
             ),
             borderRadius: BorderRadius.circular(10),
           ),
         ),
         title: Text(
-          data.name,
+          recipe.name,
           style:
               const TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
         ),
         subtitle: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: data.tags
+          children: recipe.tags
               .map((tag) => Padding(
                     padding: const EdgeInsets.only(right: 8.0),
                     child: Text(
@@ -165,7 +161,7 @@ class RecipeTile extends StatelessWidget {
                   ))
               .toList(),
         ),
-        onTap: () => toMenu(data),
+        onTap: () => toMenu(recipe),
       ),
     );
   }

@@ -32,7 +32,7 @@ class _AddRecipePageState extends State<AddRecipePage> {
               final instructions =
                   _instructionControllers.map((c) => c.text).toList();
               final imageUrl = _imageUrlController.text;
-              final tags = _ingredientControllers.map((c) => c.text).toList();
+              final tags = _tagControllers.map((c) => c.text).toList();
               final ingredients =
                   _ingredientControllers.map((c) => c.text).toList();
 
