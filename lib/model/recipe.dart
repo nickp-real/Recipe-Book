@@ -40,8 +40,18 @@ class RecipeModel extends ChangeNotifier {
     return _recipes;
   }
 
-  void add(Recipe recipe) async {
+  void add(Recipe recipe) {
     _recipes.add(recipe);
+
+    _update();
+    notifyListeners();
+  }
+
+  void edit(Recipe oldRecipe, Recipe newRecipe) {
+    // to compare the object, change it to string because of reference diff
+    final index = _recipes
+        .indexWhere((recipe) => jsonEncode(recipe) == jsonEncode(oldRecipe));
+    _recipes[index] = newRecipe;
 
     _update();
     notifyListeners();

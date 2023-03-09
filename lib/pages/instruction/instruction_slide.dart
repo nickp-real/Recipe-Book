@@ -7,7 +7,7 @@ class InstruntionSlideScreen extends StatefulWidget {
       : super(key: key);
 
   @override
-  _InstruntionSlideScreenState createState() => _InstruntionSlideScreenState();
+  State<InstruntionSlideScreen> createState() => _InstruntionSlideScreenState();
 }
 
 class _InstruntionSlideScreenState extends State<InstruntionSlideScreen> {
@@ -31,36 +31,38 @@ class _InstruntionSlideScreenState extends State<InstruntionSlideScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('วิธีทำ'),
+        title: const Text('วิธีทำ'),
       ),
-      body: PageView.builder(
-        controller: _pageController,
-        itemCount: widget.instructions.length,
-        onPageChanged: (int page) {
-          setState(() {
-            currentPage = page;
-          });
-        },
-        itemBuilder: (BuildContext context, int index) {
-          return Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              border: Border.all(color: Colors.grey),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            padding: EdgeInsets.all(16),
-            margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: Center(
-              child: Text(
-                widget.instructions[index],
-                style: TextStyle(
-                  fontSize: 24,
-                ),
-              ),
-            ),
-          );
-        },
-      ),
+      body: widget.instructions.isNotEmpty
+          ? PageView.builder(
+              controller: _pageController,
+              itemCount: widget.instructions.length,
+              onPageChanged: (int page) {
+                setState(() {
+                  currentPage = page;
+                });
+              },
+              itemBuilder: (BuildContext context, int index) {
+                return Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    border: Border.all(color: Colors.grey),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  padding: const EdgeInsets.all(16),
+                  margin:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  child: Center(
+                    child: Text(
+                      widget.instructions[index],
+                      style: const TextStyle(
+                        fontSize: 24,
+                      ),
+                    ),
+                  ),
+                );
+              })
+          : const Center(child: Text("No instruction provided.")),
       bottomNavigationBar: Container(
         height: 80,
         color: Colors.grey[200],
@@ -70,24 +72,24 @@ class _InstruntionSlideScreenState extends State<InstruntionSlideScreen> {
             IconButton(
               onPressed: () {
                 _pageController.previousPage(
-                  duration: Duration(milliseconds: 300),
+                  duration: const Duration(milliseconds: 300),
                   curve: Curves.easeInOut,
                 );
               },
-              icon: Icon(Icons.arrow_left),
+              icon: const Icon(Icons.arrow_left),
             ),
             Text(
               '${currentPage + 1} / ${widget.instructions.length}',
-              style: TextStyle(fontSize: 18),
+              style: const TextStyle(fontSize: 18),
             ),
             IconButton(
               onPressed: () {
                 _pageController.nextPage(
-                  duration: Duration(milliseconds: 300),
+                  duration: const Duration(milliseconds: 300),
                   curve: Curves.easeInOut,
                 );
               },
-              icon: Icon(Icons.arrow_right),
+              icon: const Icon(Icons.arrow_right),
             ),
           ],
         ),
@@ -95,4 +97,3 @@ class _InstruntionSlideScreenState extends State<InstruntionSlideScreen> {
     );
   }
 }
-

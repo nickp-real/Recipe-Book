@@ -2,15 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
 import 'package:receipe_book/model/recipe.dart';
+import 'package:receipe_book/pages/menu/menu.dart';
 
-class AddRecipePage extends StatefulWidget {
-  const AddRecipePage({Key? key}) : super(key: key);
+class AddOrEditRecipePage extends StatefulWidget {
+  const AddOrEditRecipePage({Key? key, this.recipe}) : super(key: key);
+
+  final Recipe? recipe;
 
   @override
-  State<AddRecipePage> createState() => _AddRecipePageState();
+  State<AddOrEditRecipePage> createState() => _AddOrEditRecipePageState();
 }
 
-class _AddRecipePageState extends State<AddRecipePage> {
+class _AddOrEditRecipePageState extends State<AddOrEditRecipePage> {
   final _formKey = GlobalKey<FormState>();
 
   final _nameController = TextEditingController();
@@ -20,14 +23,49 @@ class _AddRecipePageState extends State<AddRecipePage> {
   final _instructionControllers = <TextEditingController>[];
 
   @override
+  void initState() {
+    final recipe = widget.recipe;
+    if (recipe != null) {
+      _nameController.text = recipe.name;
+      _imageUrlController.text = recipe.imageUrl;
+      for (var tag in recipe.tags) {
+        _tagControllers.add(TextEditingController(text: tag));
+      }
+      for (var ingredient in recipe.ingredients) {
+        _ingredientControllers.add(TextEditingController(text: ingredient));
+      }
+      for (var instruction in recipe.instructions) {
+        _instructionControllers.add(TextEditingController(text: instruction));
+      }
+    }
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _imageUrlController.dispose();
+    for (var element in _ingredientControllers) {
+      element.dispose();
+    }
+    for (var element in _tagControllers) {
+      element.dispose();
+    }
+    for (var element in _instructionControllers) {
+      element.dispose();
+    }
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Add Recipe'),
+          title: Text(widget.recipe != null ? 'Edit Recipe' : 'Add Recipe'),
         ),
         body: Consumer<RecipeModel>(
           builder: (_, recipes, __) {
-            void saveRecipe() async {
+            void onSave() async {
               final name = _nameController.text;
               final instructions =
                   _instructionControllers.map((c) => c.text).toList();
@@ -37,11 +75,13 @@ class _AddRecipePageState extends State<AddRecipePage> {
                   _ingredientControllers.map((c) => c.text).toList();
 
               final recipe =
-                  Recipe(name, imageUrl, tags, instructions, ingredients);
-              recipes.add(recipe);
+                  Recipe(name, imageUrl, tags, ingredients, instructions);
 
-              ScaffoldMessenger.of(context)
-                  .showSnackBar(SnackBar(content: Text("Add $name success.")));
+              if (widget.recipe != null) {
+                recipes.edit(widget.recipe!, recipe);
+              } else {
+                recipes.add(recipe);
+              }
 
               // await FirebaseFirestore.instance.collection('recipes').add({
               //   'name': name,
@@ -50,7 +90,17 @@ class _AddRecipePageState extends State<AddRecipePage> {
               //   'tags': tags,
               //   'ingredients': ingredients,
               // }).then((_) => Navigator.pop(context));
+
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  content: Text(
+                      "${widget.recipe != null ? "Edit" : "Add"} $name success.")));
               Navigator.pop(context);
+              if (widget.recipe != null) {
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => MenuPage(recipe: recipe)));
+              }
             }
 
             return SingleChildScrollView(
@@ -83,18 +133,19 @@ class _AddRecipePageState extends State<AddRecipePage> {
                         },
                       ),
                       const SizedBox(height: 16),
-                      ListForm(fields: _tagControllers, name: 'Category'),
+                      ListForm(fields: _tagControllers, label: 'Category'),
                       const SizedBox(height: 16),
                       ListForm(
-                          fields: _ingredientControllers, name: 'Ingredient'),
+                          fields: _ingredientControllers, label: 'Ingredient'),
                       const SizedBox(height: 16),
                       ListForm(
-                          fields: _instructionControllers, name: 'Instruction'),
+                          fields: _instructionControllers,
+                          label: 'Instruction'),
                       const SizedBox(height: 16),
                       ElevatedButton(
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
-                            saveRecipe();
+                            onSave();
                           }
                         },
                         child: const Text('Save Recipe'),
@@ -110,10 +161,10 @@ class _AddRecipePageState extends State<AddRecipePage> {
 }
 
 class ListForm extends StatefulWidget {
-  const ListForm({required this.fields, required this.name, super.key});
+  const ListForm({required this.fields, required this.label, super.key});
 
   final List<TextEditingController> fields;
-  final String name;
+  final String label;
 
   @override
   State<ListForm> createState() => _ListFormState();
@@ -137,7 +188,7 @@ class _ListFormState extends State<ListForm> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text(widget.name, style: Theme.of(context).textTheme.subtitle1),
+        Text(widget.label, style: Theme.of(context).textTheme.subtitle1),
         const SizedBox(height: 8),
         ListView.builder(
           shrinkWrap: true,
@@ -149,10 +200,10 @@ class _ListFormState extends State<ListForm> {
                   child: TextFormField(
                     controller: widget.fields[index],
                     decoration: InputDecoration(
-                        labelText: '${widget.name} ${index + 1}'),
+                        labelText: '${widget.label} ${index + 1}'),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter ${widget.name}';
+                        return 'Please enter ${widget.label}';
                       }
                       return null;
                     },
@@ -170,7 +221,7 @@ class _ListFormState extends State<ListForm> {
         ElevatedButton.icon(
           onPressed: _addField,
           icon: const Icon(Icons.add),
-          label: Text('Add ${widget.name}'),
+          label: Text('Add ${widget.label}'),
         ),
       ],
     );

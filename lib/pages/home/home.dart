@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:receipe_book/model/recipe.dart';
-import 'package:receipe_book/pages/add/add_recipe.dart';
+import 'package:receipe_book/pages/add_or_edit/add_or_edit_recipe.dart';
 import 'package:receipe_book/pages/menu/menu.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -17,7 +17,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void _navigateToAddRecipePage() {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => const AddRecipePage()),
+      MaterialPageRoute(builder: (context) => const AddOrEditRecipePage()),
     );
   }
 
