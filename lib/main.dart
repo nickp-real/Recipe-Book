@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:receipe_book/model/recipe.dart';
 
 import 'package:receipe_book/pages/home/home.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -9,7 +11,9 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(const MyApp());
+  runApp(MultiProvider(
+      providers: [ChangeNotifierProvider(create: (context) => RecipeModel())],
+      child: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {
