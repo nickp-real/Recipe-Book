@@ -1,20 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:receipe_book/model/recipe.dart';
+import 'package:receipe_book/services/storage.dart';
 import 'package:receipe_book/widgets/no_recipe_text.dart';
 import 'package:receipe_book/widgets/recipe_tile.dart';
 
-class RecipeList extends StatelessWidget {
+class RecipeList<T extends Storage> extends StatelessWidget {
   const RecipeList({
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<RecipeModel>(
-      builder: (_, recipe, __) {
+    return Consumer<T>(
+      builder: (_, recipes, __) {
         return FutureBuilder(
-            future: recipe.fetch(),
+            future: recipes.fetch(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.done) {
                 return snapshot.data!.isNotEmpty
@@ -24,7 +25,7 @@ class RecipeList extends StatelessWidget {
                           itemCount: snapshot.data!.length,
                           itemBuilder: (BuildContext context, int index) {
                             Recipe recipe = snapshot.data![index];
-                            return RecipeTile(recipe: recipe);
+                            return RecipeTile<T>(recipe);
                           },
                         ))
                     : const Center(

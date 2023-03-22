@@ -27,7 +27,6 @@ class _MainAppBarState extends State<MainAppBar> {
   @override
   Widget build(BuildContext context) {
     void drawerState() {
-      print(widget.drawerKey.currentState);
       if (widget.drawerKey.currentState!.isDrawerOpen) {
         widget.drawerKey.currentState!.closeDrawer();
       } else {

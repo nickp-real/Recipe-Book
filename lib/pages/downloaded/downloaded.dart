@@ -1,27 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:receipe_book/auth.dart';
-import 'package:receipe_book/pages/add_or_edit/add_or_edit_recipe.dart';
-import 'package:receipe_book/services/recipe_storage.dart';
+import 'package:receipe_book/services/downloaded_storage.dart';
 import 'package:receipe_book/widgets/appbar.dart';
 import 'package:receipe_book/widgets/drawer.dart';
 import 'package:receipe_book/widgets/recipe_list.dart';
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key}) : super(key: key);
+class DownloadedPage extends StatefulWidget {
+  const DownloadedPage({Key? key}) : super(key: key);
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<DownloadedPage> createState() => _DownloadedPageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _DownloadedPageState extends State<DownloadedPage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-
-  void _navigateToAddRecipePage() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const AddOrEditRecipePage()),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,18 +25,14 @@ class _MyHomePageState extends State<MyHomePage> {
           appBar: AppBar(
             title: MainAppBar(
                 drawerKey: _scaffoldKey,
-                title: 'Your Recipes',
+                title: 'Downloaded Recipes',
                 onSearch: (value) {}),
             centerTitle: true,
             toolbarHeight: 100,
             automaticallyImplyLeading: false,
           ),
           drawer: const MyDrawer(),
-          body: const RecipeList<RecipeStorage>(),
-          floatingActionButton: FloatingActionButton(
-            onPressed: _navigateToAddRecipePage,
-            child: const Icon(Icons.add),
-          ),
+          body: const RecipeList<DownloadedStorage>(),
         );
       },
     );

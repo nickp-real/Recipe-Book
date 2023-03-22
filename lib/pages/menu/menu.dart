@@ -1,36 +1,54 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:receipe_book/auth.dart';
 import 'package:receipe_book/model/recipe.dart';
 import 'package:receipe_book/pages/add_or_edit/add_or_edit_recipe.dart';
 import 'package:receipe_book/pages/instruction/instruction_slide.dart';
 import 'package:receipe_book/pages/shopping/shopping_list.dart';
+import 'package:receipe_book/services/downloaded_storage.dart';
+import 'package:receipe_book/services/storage.dart';
+import 'package:receipe_book/widgets/custom_snackbar.dart';
 
-enum MenuPopup { del }
+enum MenuPopup { del, share }
 
-class MenuPage extends StatefulWidget {
-  const MenuPage({
+class MenuPage<T extends Storage> extends StatelessWidget {
+  const MenuPage(
+    this.recipe, {
     Key? key,
-    required this.recipe,
+    this.isDownload = false,
   }) : super(key: key);
 
   final Recipe recipe;
+  final bool isDownload;
 
-  @override
-  State<MenuPage> createState() => _MenuPageState();
-}
-
-class _MenuPageState extends State<MenuPage> {
   @override
   Widget build(BuildContext context) {
-    final recipe = widget.recipe;
-    return Consumer<RecipeModel>(builder: (_, recipes, __) {
+    void handleOnShoppingCartClick() {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) =>
+                ShoppingCartScreen(ingredients: recipe.ingredients)),
+      );
+    }
+
+    void handleOnInstructionClick() {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) =>
+                InstruntionSlideScreen(instructions: recipe.instructions)),
+      );
+    }
+
+    return Consumer<T>(builder: (_, recipes, __) {
       void onDeleteSelect() {
         showDialog(
             context: context,
             builder: (context) => AlertDialog(
                   title: const Text("Deleting this recipe?"),
-                  content:
-                      Text("Are you sure to delete ${widget.recipe.name}?"),
+                  content: Text("Are you sure to delete ${recipe.name}?"),
                   actions: [
                     TextButton(
                         onPressed: () => Navigator.pop(context),
@@ -40,43 +58,128 @@ class _MenuPageState extends State<MenuPage> {
                           recipes.remove(recipe);
                           Navigator.pop(context);
                           Navigator.pop(context);
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                              content:
-                                  Text("Delete ${recipe.name} successful.")));
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              CustomSnackbar.success(
+                                  message:
+                                      'Delete ${recipe.name} successful.'));
                         },
                         child: const Text("Yes"))
                   ],
                 ));
       }
 
+      void onShareSelect() {
+        if (Auth().currentUser == null) {
+          ScaffoldMessenger.of(context).showSnackBar(CustomSnackbar.error(
+              message: 'Please login first before share.'));
+          Navigator.pushNamed(context, '/login');
+          return;
+        }
+
+        showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+                  title: const Text("Sharing this recipe?"),
+                  content: Text("Are you sure to share ${recipe.name}?"),
+                  actions: [
+                    TextButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: const Text("No")),
+                    TextButton(
+                        onPressed: () async {
+                          try {
+                            final shareRecipe = recipe;
+                            shareRecipe.author = Auth().currentUser!.email!;
+                            await FirebaseFirestore.instance
+                                .collection('recipes')
+                                .add(shareRecipe.toJson());
+
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  CustomSnackbar.success(
+                                      message:
+                                          'Share ${recipe.name} successful.'));
+                            }
+                          } catch (_) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                CustomSnackbar.error(
+                                    message: 'Share ${recipe.name} failed.'));
+                          }
+                          if (context.mounted) {
+                            Navigator.pop(context);
+                          }
+                        },
+                        child: const Text("Yes"))
+                  ],
+                ));
+      }
+
+      void handleOnDownloadClick() {
+        final res = recipes.add(recipe) as bool;
+        ScaffoldMessenger.of(context).showSnackBar(res
+            ? CustomSnackbar.success(
+                message:
+                    "Added ${recipe.name} to 'Downloaded Recipes' successful")
+            : CustomSnackbar.error(
+                message: 'Failed to add ${recipe.name}, already have it?'));
+      }
+
       return Scaffold(
         appBar: AppBar(
           centerTitle: true,
           title: Text(recipe.name),
-          actions: [
-            IconButton(
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) =>
-                            AddOrEditRecipePage(recipe: recipe)));
-              },
-              icon: const Icon(Icons.edit),
-            ),
-            PopupMenuButton<MenuPopup>(onSelected: (value) {
-              if (value == MenuPopup.del) {
-                onDeleteSelect();
-              }
-            }, itemBuilder: (context) {
-              return <PopupMenuEntry<MenuPopup>>[
-                const PopupMenuItem<MenuPopup>(
-                  value: MenuPopup.del,
-                  child: Text('Delete'),
-                )
-              ];
-            }),
-          ],
+          actions: !isDownload
+              ? [
+                  IconButton(
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  AddOrEditRecipePage<T>(recipe: recipe)));
+                    },
+                    icon: const Icon(Icons.edit),
+                  ),
+                  PopupMenuButton<MenuPopup>(onSelected: (value) {
+                    if (value == MenuPopup.del) {
+                      onDeleteSelect();
+                    }
+                    if (value == MenuPopup.share) {
+                      onShareSelect();
+                    }
+                  }, itemBuilder: (context) {
+                    return <PopupMenuEntry<MenuPopup>>[
+                      if (!isDownload && T != DownloadedStorage)
+                        PopupMenuItem<MenuPopup>(
+                          value: MenuPopup.share,
+                          child: Row(
+                            children: const [
+                              Icon(
+                                Icons.share_rounded,
+                                color: Colors.brown,
+                              ),
+                              SizedBox(width: 5),
+                              Text('Share')
+                            ],
+                          ),
+                        ),
+                      PopupMenuItem<MenuPopup>(
+                        value: MenuPopup.del,
+                        child: Row(
+                          children: const [
+                            Icon(
+                              Icons.delete_rounded,
+                              color: Colors.brown,
+                            ),
+                            SizedBox(width: 5),
+                            Text('Delete')
+                          ],
+                        ),
+                      ),
+                    ];
+                  }),
+                ]
+              : null,
         ),
         body: Padding(
           padding: const EdgeInsets.symmetric(vertical: 20),
@@ -112,50 +215,29 @@ class _MenuPageState extends State<MenuPage> {
                 endIndent: 20,
               ),
 
-              // Add icons below the divider
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => ShoppingCartScreen(
-                                ingredients: recipe.ingredients)),
-                      );
-                    },
-                    child: Container(
-                      width: 60,
-                      height: 30,
-                      decoration: BoxDecoration(
-                        color: Colors.grey[300],
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                      child: const Icon(Icons.shopping_cart),
+              // button
+              !isDownload
+                  ? Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        ElevatedButton.icon(
+                          onPressed: handleOnShoppingCartClick,
+                          icon: const Icon(Icons.shopping_cart_rounded),
+                          label: const Text("Shopping"),
+                        ),
+                        ElevatedButton.icon(
+                          onPressed: handleOnInstructionClick,
+                          icon: const Icon(Icons.menu_book_rounded),
+                          label: const Text("Cooking"),
+                        ),
+                      ],
+                    )
+                  : Center(
+                      child: ElevatedButton.icon(
+                          onPressed: handleOnDownloadClick,
+                          icon: const Icon(Icons.download_rounded),
+                          label: const Text("Download")),
                     ),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => InstruntionSlideScreen(
-                                instructions: recipe.instructions)),
-                      );
-                    },
-                    child: Container(
-                      width: 60,
-                      height: 30,
-                      decoration: BoxDecoration(
-                        color: Colors.grey[300],
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                      child: const Icon(Icons.play_arrow),
-                    ),
-                  ),
-                ],
-              ),
             ],
           ),
         ),
