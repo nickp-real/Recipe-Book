@@ -2,7 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:receipe_book/auth.dart';
-import 'package:receipe_book/pages/home/home.dart';
 import 'package:receipe_book/validator.dart';
 import 'package:receipe_book/widgets/custom_snackbar.dart';
 

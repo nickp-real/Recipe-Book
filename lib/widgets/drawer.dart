@@ -45,7 +45,11 @@ class MyDrawer extends StatelessWidget {
       }
     }
 
-    void handleOnDownloadedRecipesClick() {}
+    void handleOnDownloadedRecipesClick() {
+      if (currentRoute.settings.name != '/downloaded') {
+        Navigator.of(context).pushReplacementNamed('/downloaded');
+      }
+    }
 
     return Drawer(
       backgroundColor: Colors.black,
@@ -70,7 +74,7 @@ class MyDrawer extends StatelessWidget {
                 onTap: handleOnFindRecipesClick,
                 isRoute: currentRoute.settings.name == '/find'),
             _DrawerTile(
-                icon: Icons.menu_book_rounded,
+                icon: Icons.book_rounded,
                 title: "Your Recipes",
                 onTap: handleOnYourRecipesClick,
                 isRoute: currentRoute.settings.name == '/'),

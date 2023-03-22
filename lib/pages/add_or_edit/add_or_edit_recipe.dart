@@ -2,17 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:receipe_book/model/recipe.dart';
 import 'package:receipe_book/pages/menu/menu.dart';
+import 'package:receipe_book/services/storage.dart';
 
-class AddOrEditRecipePage extends StatefulWidget {
+class AddOrEditRecipePage<T extends Storage> extends StatefulWidget {
   const AddOrEditRecipePage({Key? key, this.recipe}) : super(key: key);
 
   final Recipe? recipe;
 
   @override
-  State<AddOrEditRecipePage> createState() => _AddOrEditRecipePageState();
+  State<AddOrEditRecipePage<T>> createState() => _AddOrEditRecipePageState<T>();
 }
 
-class _AddOrEditRecipePageState extends State<AddOrEditRecipePage> {
+class _AddOrEditRecipePageState<T extends Storage>
+    extends State<AddOrEditRecipePage<T>> {
   final _formKey = GlobalKey<FormState>();
 
   final _nameController = TextEditingController();
@@ -62,7 +64,7 @@ class _AddOrEditRecipePageState extends State<AddOrEditRecipePage> {
         appBar: AppBar(
           title: Text(widget.recipe != null ? 'Edit Recipe' : 'Add Recipe'),
         ),
-        body: Consumer<RecipeModel>(
+        body: Consumer<T>(
           builder: (_, recipes, __) {
             void onSave() async {
               final name = _nameController.text;
@@ -82,14 +84,6 @@ class _AddOrEditRecipePageState extends State<AddOrEditRecipePage> {
                 recipes.add(recipe);
               }
 
-              // await FirebaseFirestore.instance.collection('recipes').add({
-              //   'name': name,
-              //   'instructions': instructions,
-              //   'imageUrl': imageUrl,
-              //   'tags': tags,
-              //   'ingredients': ingredients,
-              // }).then((_) => Navigator.pop(context));
-
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                   content: Text(
                       "${widget.recipe != null ? "Edit" : "Add"} $name success.")));
@@ -98,7 +92,7 @@ class _AddOrEditRecipePageState extends State<AddOrEditRecipePage> {
                 Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => MenuPage(recipe: recipe)));
+                        builder: (context) => MenuPage<T>(recipe)));
               }
             }
 

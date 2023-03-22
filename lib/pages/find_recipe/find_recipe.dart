@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:receipe_book/auth.dart';
 import 'package:receipe_book/model/recipe.dart';
+import 'package:receipe_book/services/downloaded_storage.dart';
 import 'package:receipe_book/widgets/appbar.dart';
 import 'package:receipe_book/widgets/drawer.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -40,6 +41,12 @@ class _FindRecipePageState extends State<FindRecipePage> {
                 .snapshots(),
             builder:
                 (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+
               if (snapshot.hasError) {
                 return const Center(
                     child: NoRecipeText(
@@ -57,12 +64,6 @@ class _FindRecipePageState extends State<FindRecipePage> {
                 ));
               }
 
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
-              }
-
               return Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: ListView.builder(
@@ -70,7 +71,8 @@ class _FindRecipePageState extends State<FindRecipePage> {
                   itemBuilder: (BuildContext context, int index) {
                     Recipe data = Recipe.fromJson(snapshot.data!.docs[index]
                         .data() as Map<String, dynamic>);
-                    return RecipeTile(recipe: data);
+                    return RecipeTile<DownloadedStorage>(data,
+                        isDownload: true);
                   },
                 ),
               );
