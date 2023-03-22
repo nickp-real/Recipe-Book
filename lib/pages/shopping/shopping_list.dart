@@ -66,7 +66,7 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
                   ),
                   ElevatedButton(
                       onPressed: () => Navigator.pop(context),
-                      child: Text("Finish"))
+                      child: const Text("Finish"))
                 ],
               ),
             )
