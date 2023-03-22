@@ -38,11 +38,11 @@ class _MenuPageState extends State<MenuPage> {
                     TextButton(
                         onPressed: () {
                           recipes.remove(recipe);
+                          Navigator.pop(context);
+                          Navigator.pop(context);
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                               content:
                                   Text("Delete ${recipe.name} successful.")));
-                          Navigator.pop(context);
-                          Navigator.pop(context);
                         },
                         child: const Text("Yes"))
                   ],
@@ -57,11 +57,10 @@ class _MenuPageState extends State<MenuPage> {
             IconButton(
               onPressed: () {
                 Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          AddOrEditRecipePage(recipe: recipe)),
-                );
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            AddOrEditRecipePage(recipe: recipe)));
               },
               icon: const Icon(Icons.edit),
             ),
@@ -86,21 +85,7 @@ class _MenuPageState extends State<MenuPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Center(
-                child: Container(
-                  width: 250,
-                  height: 250,
-                  decoration: BoxDecoration(
-                    color: Colors.grey[800],
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
-                    child: Image.network(
-                      recipe.imageUrl,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ),
+                child: MenuImage(recipe: recipe),
               ),
               const SizedBox(height: 10),
               Padding(
@@ -131,7 +116,7 @@ class _MenuPageState extends State<MenuPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  InkWell(
+                  GestureDetector(
                     onTap: () {
                       Navigator.push(
                         context,
@@ -150,7 +135,7 @@ class _MenuPageState extends State<MenuPage> {
                       child: const Icon(Icons.shopping_cart),
                     ),
                   ),
-                  InkWell(
+                  GestureDetector(
                     onTap: () {
                       Navigator.push(
                         context,
@@ -176,6 +161,36 @@ class _MenuPageState extends State<MenuPage> {
         ),
       );
     });
+  }
+}
+
+class MenuImage extends StatelessWidget {
+  const MenuImage({
+    super.key,
+    required this.recipe,
+  });
+
+  final Recipe recipe;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 250,
+      height: 250,
+      decoration: BoxDecoration(
+        color: Colors.grey.shade400,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(10),
+        child: Image.network(
+          recipe.imageUrl,
+          fit: BoxFit.cover,
+          errorBuilder: ((context, error, stackTrace) => const Center(
+              child: Text("Can't show the image, may be wrong url."))),
+        ),
+      ),
+    );
   }
 }
 

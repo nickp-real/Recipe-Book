@@ -79,7 +79,7 @@ class _InstruntionSlideScreenState extends State<InstruntionSlideScreen> {
               icon: const Icon(Icons.arrow_left),
             ),
             Text(
-              '${currentPage + 1} / ${widget.instructions.length}',
+              '${widget.instructions.isNotEmpty ? currentPage + 1 : widget.instructions.length} / ${widget.instructions.length}',
               style: const TextStyle(fontSize: 18),
             ),
             IconButton(
