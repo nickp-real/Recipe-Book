@@ -19,7 +19,8 @@ class _MyHomePageState extends State<MyHomePage> {
   void _navigateToAddRecipePage() {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => const AddOrEditRecipePage()),
+      MaterialPageRoute(
+          builder: (context) => const AddOrEditRecipePage<RecipeStorage>()),
     );
   }
 

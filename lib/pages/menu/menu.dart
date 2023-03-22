@@ -268,8 +268,8 @@ class MenuImage extends StatelessWidget {
         child: Image.network(
           recipe.imageUrl,
           fit: BoxFit.cover,
-          errorBuilder: ((context, error, stackTrace) => const Center(
-              child: Text("Can't show the image, may be wrong url."))),
+          errorBuilder: ((context, error, stackTrace) =>
+              const Center(child: Text("Can't show the image, wrong url?"))),
         ),
       ),
     );
