@@ -15,6 +15,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
+  String query = '';
 
   void _navigateToAddRecipePage() {
     Navigator.push(
@@ -22,6 +23,12 @@ class _MyHomePageState extends State<MyHomePage> {
       MaterialPageRoute(
           builder: (context) => const AddOrEditRecipePage<RecipeStorage>()),
     );
+  }
+
+  void _onSearch(String searchText) {
+    setState(() {
+      query = searchText;
+    });
   }
 
   @override
@@ -33,15 +40,16 @@ class _MyHomePageState extends State<MyHomePage> {
           key: _scaffoldKey,
           appBar: AppBar(
             title: MainAppBar(
-                drawerKey: _scaffoldKey,
-                title: 'Your Recipes',
-                onSearch: (value) {}),
+              drawerKey: _scaffoldKey,
+              title: 'Your Recipes',
+              onSearch: _onSearch,
+            ),
             centerTitle: true,
             toolbarHeight: 100,
             automaticallyImplyLeading: false,
           ),
           drawer: const MyDrawer(),
-          body: const RecipeList<RecipeStorage>(),
+          body: RecipeList<RecipeStorage>(query: query),
           floatingActionButton: FloatingActionButton(
             onPressed: _navigateToAddRecipePage,
             child: const Icon(Icons.add),

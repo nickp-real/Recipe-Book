@@ -18,14 +18,26 @@ class FindRecipePage extends StatefulWidget {
 class _FindRecipePageState extends State<FindRecipePage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   late Stream<QuerySnapshot> _stream;
-  late String _searchText = "";
 
   @override
   void initState() {
     super.initState();
-    _stream = FirebaseFirestore.instance
-        .collectionGroup('recipes')
-        .snapshots();
+    _stream = FirebaseFirestore.instance.collectionGroup('recipes').snapshots();
+  }
+
+  void onSearch(String searchText) {
+    setState(() {
+      if (searchText.isEmpty) {
+        _stream =
+            FirebaseFirestore.instance.collectionGroup('recipes').snapshots();
+      } else {
+        _stream = FirebaseFirestore.instance
+            .collectionGroup('recipes')
+            .where('name', isGreaterThanOrEqualTo: searchText)
+            .where('name', isLessThan: '${searchText}z')
+            .snapshots();
+      }
+    });
   }
 
   @override
@@ -36,29 +48,13 @@ class _FindRecipePageState extends State<FindRecipePage> {
         return Scaffold(
           key: _scaffoldKey,
           appBar: AppBar(
-            title: PreferredSize(
-              preferredSize: Size.fromHeight(10),
-              child: MainAppBar(
-                drawerKey: _scaffoldKey,
-                title: 'Find Recipes',
-                onSearch: (value) {
-                  setState(() {
-                    _searchText = value;
-                    if (_searchText.isEmpty) {
-                      _stream = FirebaseFirestore.instance
-                          .collectionGroup('recipes')
-                          .snapshots();
-                    } else {
-                      _stream = FirebaseFirestore.instance
-                          .collectionGroup('recipes')
-                          .where('name', arrayContains: [_searchText])
-                          .snapshots();
-                    }
-                  });
-                },
-              ),
+            title: MainAppBar(
+              drawerKey: _scaffoldKey,
+              title: 'Find Recipes',
+              onSearch: onSearch,
             ),
             centerTitle: true,
+            toolbarHeight: 100,
             automaticallyImplyLeading: false,
           ),
           drawer: const MyDrawer(),
@@ -73,12 +69,10 @@ class _FindRecipePageState extends State<FindRecipePage> {
               }
 
               if (snapshot.hasError) {
-                print(snapshot.error);
                 return Center(
                   child: NoRecipeText(
                     title: "Something went wrong!",
                     subtext: "Error: ${snapshot.error}",
-
                   ),
                 );
               }
@@ -88,7 +82,16 @@ class _FindRecipePageState extends State<FindRecipePage> {
                   child: NoRecipeText(
                     title: "Empty book!",
                     subtext:
-                    "Currently, there're only blank pages in our database.",
+                        "Currently, there're only blank pages in our database.",
+                  ),
+                );
+              }
+
+              if (snapshot.data!.docs.isEmpty) {
+                return const Center(
+                  child: NoRecipeText(
+                    title: "Blank page!",
+                    subtext: "Can't find the recipe you are looking for.",
                   ),
                 );
               }

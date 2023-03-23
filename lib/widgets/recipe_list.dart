@@ -6,9 +6,9 @@ import 'package:receipe_book/widgets/no_recipe_text.dart';
 import 'package:receipe_book/widgets/recipe_tile.dart';
 
 class RecipeList<T extends Storage> extends StatelessWidget {
-  const RecipeList({
-    super.key,
-  });
+  const RecipeList({super.key, this.query = ''});
+
+  final String query;
 
   @override
   Widget build(BuildContext context) {
@@ -18,21 +18,36 @@ class RecipeList<T extends Storage> extends StatelessWidget {
             future: recipes.fetch(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.done) {
-                return snapshot.data!.isNotEmpty
+                final queryData = query.isEmpty
+                    ? snapshot.data!
+                    : snapshot.data!.where((recipe) =>
+                        recipe.name.contains(query) ||
+                        recipe.tags
+                            .any((tag) => tag.toString().contains(query)) ||
+                        recipe.author.contains(query));
+
+                return queryData.isNotEmpty
                     ? Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: ListView.builder(
-                          itemCount: snapshot.data!.length,
+                          itemCount: queryData.length,
                           itemBuilder: (BuildContext context, int index) {
                             Recipe recipe = snapshot.data![index];
                             return RecipeTile<T>(recipe);
                           },
                         ))
-                    : const Center(
-                        child: NoRecipeText(
-                        title: "No recipes yet",
-                        subtext: "Creative recipes need a book for them.",
-                      ));
+                    : query.isEmpty
+                        ? const Center(
+                            child: NoRecipeText(
+                            title: "No recipes yet",
+                            subtext: "Creative recipes need a book for them.",
+                          ))
+                        : const Center(
+                            child: NoRecipeText(
+                            title: "Blank page!",
+                            subtext:
+                                "Can't find the recipe you are looking for.",
+                          ));
               }
               return const Center(child: CircularProgressIndicator());
             });

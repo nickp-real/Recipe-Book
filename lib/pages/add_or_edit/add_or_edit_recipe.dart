@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:receipe_book/model/recipe.dart';
 import 'package:receipe_book/pages/menu/menu.dart';
 import 'package:receipe_book/services/storage.dart';
+import 'package:receipe_book/widgets/custom_snackbar.dart';
 
 class AddOrEditRecipePage<T extends Storage> extends StatefulWidget {
   const AddOrEditRecipePage({Key? key, this.recipe}) : super(key: key);
@@ -83,10 +84,9 @@ class _AddOrEditRecipePageState<T extends Storage>
               } else {
                 recipes.add(recipe);
               }
-
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                  content: Text(
-                      "${widget.recipe != null ? "Edit" : "Add"} $name success.")));
+              ScaffoldMessenger.of(context).showSnackBar(CustomSnackbar.success(
+                  message:
+                      "${widget.recipe != null ? "Edit" : "Add"} $name success."));
               Navigator.pop(context);
               if (widget.recipe != null) {
                 Navigator.pushReplacement(
