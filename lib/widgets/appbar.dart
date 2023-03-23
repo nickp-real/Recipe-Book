@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 
 class MainAppBar extends StatefulWidget {
   const MainAppBar(
-      {super.key,
-      required this.drawerKey,
-      required this.title,
-      required this.onSearch});
+  {super.key,
+  required this.drawerKey,
+  required this.title,
+  required this.onSearch});
 
   final GlobalKey<ScaffoldState> drawerKey;
   final String title;
@@ -17,7 +17,21 @@ class MainAppBar extends StatefulWidget {
 
 class _MainAppBarState extends State<MainAppBar> {
   final _searchController = TextEditingController();
+  String searchQuery = '';
 
+  void clearSearch() {
+    setState(() {
+      _searchController.clear();
+    });
+    widget.onSearch('');
+  }
+
+  void search(String query) {
+    setState(() {
+      searchQuery = query;
+    });
+    widget.onSearch(query);
+  }
   @override
   void dispose() {
     _searchController.dispose();
@@ -47,32 +61,41 @@ class _MainAppBarState extends State<MainAppBar> {
           controller: _searchController,
           style: const TextStyle(color: Colors.white),
           decoration: InputDecoration(
-              prefixIcon: IconButton(
-                  onPressed: drawerState, icon: const Icon(Icons.menu)),
-              prefixIconColor: Colors.white,
-              border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20),
-                  borderSide: const BorderSide(width: 2)),
-              contentPadding: EdgeInsets.zero,
-              label: Row(children: const [
+            prefixIcon: IconButton(
+              onPressed: drawerState,
+              icon: const Icon(Icons.menu),
+            ),
+            prefixIconColor: Colors.white,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(20),
+              borderSide: const BorderSide(width: 2),
+            ),
+            contentPadding: EdgeInsets.zero,
+            label: Row(
+              children: const [
                 Icon(
                   Icons.search_rounded,
                   color: Colors.grey,
                 ),
                 SizedBox(width: 3),
-                Text('What are you finding?',
-                    style: TextStyle(color: Colors.grey))
-              ]),
-              floatingLabelBehavior: FloatingLabelBehavior.never,
-              filled: true,
-              fillColor: Colors.black,
-              suffixIcon: _searchController.text.isNotEmpty
-                  ? IconButton(
-                      onPressed: () {},
-                      highlightColor: Colors.transparent,
-                      splashColor: Colors.transparent,
-                      icon: const Icon(Icons.cancel, color: Colors.white))
-                  : null),
+                Text(
+                  'What are you finding?',
+                  style: TextStyle(color: Colors.grey),
+                )
+              ],
+            ),
+            floatingLabelBehavior: FloatingLabelBehavior.never,
+            filled: true,
+            fillColor: Colors.black,
+            suffixIcon: _searchController.text.isNotEmpty
+                ? IconButton(
+              onPressed: clearSearch,
+              highlightColor: Colors.transparent,
+              splashColor: Colors.transparent,
+              icon: const Icon(Icons.cancel, color: Colors.white),
+            )
+                : null,
+          ),
         )
       ],
     );
