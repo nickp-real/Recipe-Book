@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 
 class MainAppBar extends StatefulWidget {
   const MainAppBar(
-  {super.key,
-  required this.drawerKey,
-  required this.title,
-  required this.onSearch});
+      {super.key,
+      required this.drawerKey,
+      required this.title,
+      required this.onSearch});
 
   final GlobalKey<ScaffoldState> drawerKey;
   final String title;
@@ -17,21 +17,12 @@ class MainAppBar extends StatefulWidget {
 
 class _MainAppBarState extends State<MainAppBar> {
   final _searchController = TextEditingController();
-  String searchQuery = '';
 
   void clearSearch() {
-    setState(() {
-      _searchController.clear();
-    });
+    _searchController.clear();
     widget.onSearch('');
   }
 
-  void search(String query) {
-    setState(() {
-      searchQuery = query;
-    });
-    widget.onSearch(query);
-  }
   @override
   void dispose() {
     _searchController.dispose();
@@ -89,11 +80,11 @@ class _MainAppBarState extends State<MainAppBar> {
             fillColor: Colors.black,
             suffixIcon: _searchController.text.isNotEmpty
                 ? IconButton(
-              onPressed: clearSearch,
-              highlightColor: Colors.transparent,
-              splashColor: Colors.transparent,
-              icon: const Icon(Icons.cancel, color: Colors.white),
-            )
+                    onPressed: clearSearch,
+                    highlightColor: Colors.transparent,
+                    splashColor: Colors.transparent,
+                    icon: const Icon(Icons.cancel, color: Colors.white),
+                  )
                 : null,
           ),
         )

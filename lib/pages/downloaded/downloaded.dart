@@ -14,6 +14,13 @@ class DownloadedPage extends StatefulWidget {
 
 class _DownloadedPageState extends State<DownloadedPage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
+  String query = '';
+
+  void _onSearch(String searchText) {
+    setState(() {
+      query = searchText;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,15 +31,16 @@ class _DownloadedPageState extends State<DownloadedPage> {
           key: _scaffoldKey,
           appBar: AppBar(
             title: MainAppBar(
-                drawerKey: _scaffoldKey,
-                title: 'Downloaded Recipes',
-                onSearch: (value) {}),
+              drawerKey: _scaffoldKey,
+              title: 'Downloaded Recipes',
+              onSearch: _onSearch,
+            ),
             centerTitle: true,
             toolbarHeight: 100,
             automaticallyImplyLeading: false,
           ),
           drawer: const MyDrawer(),
-          body: const RecipeList<DownloadedStorage>(),
+          body: RecipeList<DownloadedStorage>(query: query),
         );
       },
     );
