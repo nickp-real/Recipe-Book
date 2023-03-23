@@ -181,12 +181,11 @@ class _ListFormState extends State<ListForm> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text(widget.label, style: Theme.of(context).textTheme.subtitle1),
-        const SizedBox(height: 8),
-        ListView.builder(
-          shrinkWrap: true,
-          itemCount: widget.fields.length,
-          itemBuilder: (BuildContext context, int index) {
+        Text(widget.label,
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+        Column(
+          children: widget.fields.asMap().entries.map((field) {
+            final index = field.key;
             return Row(
               children: [
                 Expanded(
@@ -208,7 +207,7 @@ class _ListFormState extends State<ListForm> {
                 ),
               ],
             );
-          },
+          }).toList(),
         ),
         const SizedBox(height: 8),
         ElevatedButton.icon(

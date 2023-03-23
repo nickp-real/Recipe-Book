@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:receipe_book/pages/find_recipe/find_recipe.dart';
 
@@ -15,6 +16,10 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (context) => RecipeStorage()),
     ChangeNotifierProvider(create: (context) => DownloadedStorage()),

@@ -181,65 +181,94 @@ class MenuPage<T extends Storage> extends StatelessWidget {
                 ]
               : null,
         ),
-        body: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 20),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Center(
-                child: MenuImage(recipe: recipe),
-              ),
-              const SizedBox(height: 10),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(height: 10),
-                      _Category(tags: recipe.tags),
-                      const SizedBox(height: 15),
-                      _Ingredients(ingredients: recipe.ingredients),
-                      const SizedBox(height: 15),
-                      _Instructions(instructions: recipe.instructions),
-                    ],
-                  ),
+        body: Stack(
+          children: [
+            MenuImage(recipe: recipe),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(
+                  height: 225,
                 ),
-              ),
-              const Spacer(),
-              const Divider(
-                height: 40,
-                thickness: 1,
-                indent: 20,
-                endIndent: 20,
-              ),
-
-              // button
-              !isDownload
-                  ? Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                Expanded(
+                  child: Container(
+                    decoration: const BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(20),
+                            topRight: Radius.circular(20))),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        ElevatedButton.icon(
-                          onPressed: handleOnShoppingCartClick,
-                          icon: const Icon(Icons.shopping_cart_rounded),
-                          label: const Text("Shopping"),
+                        Expanded(
+                          child: SingleChildScrollView(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 8, horizontal: 16),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const SizedBox(height: 10),
+                                  _Category(tags: recipe.tags),
+                                  const SizedBox(height: 15),
+                                  _Ingredients(ingredients: recipe.ingredients),
+                                  const SizedBox(height: 15),
+                                  _Instructions(
+                                      instructions: recipe.instructions),
+                                ],
+                              ),
+                            ),
+                          ),
                         ),
-                        ElevatedButton.icon(
-                          onPressed: handleOnInstructionClick,
-                          icon: const Icon(Icons.menu_book_rounded),
-                          label: const Text("Cooking"),
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 10),
+                          child: Column(
+                            children: [
+                              const Divider(
+                                height: 20,
+                                thickness: 1,
+                                indent: 20,
+                                endIndent: 20,
+                              ),
+
+                              // button
+                              !isDownload
+                                  ? Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        ElevatedButton.icon(
+                                          onPressed: handleOnShoppingCartClick,
+                                          icon: const Icon(
+                                              Icons.shopping_cart_rounded),
+                                          label: const Text("Shopping"),
+                                        ),
+                                        ElevatedButton.icon(
+                                          onPressed: handleOnInstructionClick,
+                                          icon: const Icon(
+                                              Icons.menu_book_rounded),
+                                          label: const Text("Cooking"),
+                                        ),
+                                      ],
+                                    )
+                                  : Center(
+                                      child: ElevatedButton.icon(
+                                          onPressed: handleOnDownloadClick,
+                                          icon: const Icon(
+                                              Icons.download_rounded),
+                                          label: const Text("Download")),
+                                    ),
+                            ],
+                          ),
                         ),
                       ],
-                    )
-                  : Center(
-                      child: ElevatedButton.icon(
-                          onPressed: handleOnDownloadClick,
-                          icon: const Icon(Icons.download_rounded),
-                          label: const Text("Download")),
                     ),
-            ],
-          ),
+                  ),
+                ),
+              ],
+            ),
+          ],
         ),
       );
     });
@@ -256,22 +285,29 @@ class MenuImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 250,
-      height: 250,
-      decoration: BoxDecoration(
-        color: Colors.grey.shade400,
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(10),
-        child: Image.network(
-          recipe.imageUrl,
-          fit: BoxFit.cover,
-          errorBuilder: ((context, error, stackTrace) =>
-              const Center(child: Text("Can't show the image, wrong url?"))),
+    return Stack(
+      alignment: Alignment.bottomCenter,
+      children: [
+        Container(
+          width: double.infinity,
+          height: 250,
+          color: Colors.grey.shade400,
+          child: Image.network(
+            recipe.imageUrl,
+            fit: BoxFit.cover,
+            errorBuilder: ((context, error, stackTrace) =>
+                const Center(child: Text("Can't show the image, wrong url?"))),
+          ),
         ),
-      ),
+        Container(
+          height: 50,
+          decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [Colors.transparent, Colors.black54])),
+        )
+      ],
     );
   }
 }
@@ -290,27 +326,25 @@ class _Ingredients extends StatelessWidget {
       children: [
         const Text(
           "Ingredients",
-          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+          style: TextStyle(
+              fontWeight: FontWeight.bold, color: Colors.black, fontSize: 18),
         ),
         const SizedBox(height: 10),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-          child: ingredients.isNotEmpty
-              ? Wrap(
-                  direction: Axis.vertical,
-                  spacing: 4.0,
-                  runSpacing: 4.0,
-                  children: ingredients
-                      .map((ingredient) => Text(
-                            '\u2022 $ingredient',
-                            style: const TextStyle(
-                              fontSize: 16,
-                              color: Colors.black87,
-                            ),
-                          ))
-                      .toList())
-              : const Text("No ingredient provided."),
-        ),
+        ingredients.isNotEmpty
+            ? Wrap(
+                direction: Axis.vertical,
+                spacing: 4.0,
+                runSpacing: 4.0,
+                children: ingredients
+                    .map((ingredient) => Text(
+                          '\u2022 $ingredient',
+                          style: const TextStyle(
+                            fontSize: 16,
+                            color: Colors.black87,
+                          ),
+                        ))
+                    .toList())
+            : const Text("No ingredient provided."),
       ],
     );
   }
@@ -330,7 +364,8 @@ class _Instructions extends StatelessWidget {
       children: [
         const Text(
           "Instructions",
-          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+          style: TextStyle(
+              fontWeight: FontWeight.bold, color: Colors.black, fontSize: 18),
         ),
         const SizedBox(height: 10),
         Padding(
@@ -376,7 +411,7 @@ class _Category extends StatelessWidget {
           .map((tag) => Container(
                 padding: const EdgeInsets.symmetric(vertical: 2),
                 decoration: BoxDecoration(
-                  color: Colors.grey[300],
+                  color: Colors.brown,
                   borderRadius: BorderRadius.circular(15),
                 ),
                 child: Padding(
@@ -386,7 +421,7 @@ class _Category extends StatelessWidget {
                     tag,
                     style: const TextStyle(
                       fontSize: 16,
-                      color: Colors.black87,
+                      color: Colors.white,
                     ),
                   ),
                 ),

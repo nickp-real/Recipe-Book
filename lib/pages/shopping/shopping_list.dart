@@ -11,18 +11,12 @@ class ShoppingCartScreen extends StatefulWidget {
 }
 
 class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
-  List<Decoration?> decorations = [];
+  List<Color> colors = [];
 
   @override
   void initState() {
     super.initState();
-    decorations = List.generate(
-        widget.ingredients.length,
-        (_) => BoxDecoration(
-              color: Colors.white,
-              border: Border.all(color: Colors.grey),
-              borderRadius: BorderRadius.circular(10),
-            ));
+    colors = List.generate(widget.ingredients.length, (_) => Colors.white);
   }
 
   @override
@@ -33,33 +27,38 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
       ),
       body: widget.ingredients.isNotEmpty
           ? Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16),
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
               child: Column(
                 children: [
                   Expanded(
                     child: ListView.builder(
                         itemCount: widget.ingredients.length,
                         itemBuilder: (BuildContext context, int index) {
-                          return GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                if (decorations[index] == null) {
-                                  decorations[index] = BoxDecoration(
-                                    color: Colors.white,
-                                    border: Border.all(color: Colors.grey),
-                                    borderRadius: BorderRadius.circular(10),
-                                  );
-                                } else {
-                                  decorations[index] = null;
-                                }
-                              });
-                            },
-                            child: Container(
-                              decoration: decorations[index],
-                              padding: const EdgeInsets.all(16),
-                              margin: const EdgeInsets.symmetric(
-                                  horizontal: 16, vertical: 8),
-                              child: Text(widget.ingredients[index]),
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 8),
+                            child: GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  if (colors[index] == Colors.white) {
+                                    colors[index] = Colors.green.shade400;
+                                  } else {
+                                    colors[index] = Colors.white;
+                                  }
+                                });
+                              },
+                              child: Card(
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15)),
+                                elevation: 2,
+                                color: colors[index],
+                                child: Padding(
+                                  padding: const EdgeInsets.all(16),
+                                  child: Text(widget.ingredients[index],
+                                      style: TextStyle(
+                                          color: Colors.grey.shade800,
+                                          fontSize: 16)),
+                                ),
+                              ),
                             ),
                           );
                         }),
