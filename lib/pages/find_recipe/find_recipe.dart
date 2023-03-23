@@ -17,6 +17,16 @@ class FindRecipePage extends StatefulWidget {
 
 class _FindRecipePageState extends State<FindRecipePage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
+  late Stream<QuerySnapshot> _stream;
+  late String _searchText = "";
+
+  @override
+  void initState() {
+    super.initState();
+    _stream = FirebaseFirestore.instance
+        .collectionGroup('recipes')
+        .snapshots();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,19 +36,34 @@ class _FindRecipePageState extends State<FindRecipePage> {
         return Scaffold(
           key: _scaffoldKey,
           appBar: AppBar(
-            title: MainAppBar(
+            title: PreferredSize(
+              preferredSize: Size.fromHeight(10),
+              child: MainAppBar(
                 drawerKey: _scaffoldKey,
                 title: 'Find Recipes',
-                onSearch: (value) {}),
+                onSearch: (value) {
+                  setState(() {
+                    _searchText = value;
+                    if (_searchText.isEmpty) {
+                      _stream = FirebaseFirestore.instance
+                          .collectionGroup('recipes')
+                          .snapshots();
+                    } else {
+                      _stream = FirebaseFirestore.instance
+                          .collectionGroup('recipes')
+                          .where('name', arrayContains: [_searchText])
+                          .snapshots();
+                    }
+                  });
+                },
+              ),
+            ),
             centerTitle: true,
-            toolbarHeight: 100,
             automaticallyImplyLeading: false,
           ),
           drawer: const MyDrawer(),
           body: StreamBuilder<QuerySnapshot>(
-            stream: FirebaseFirestore.instance
-                .collectionGroup('recipes')
-                .snapshots(),
+            stream: _stream,
             builder:
                 (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
@@ -48,20 +73,24 @@ class _FindRecipePageState extends State<FindRecipePage> {
               }
 
               if (snapshot.hasError) {
-                return const Center(
-                    child: NoRecipeText(
-                  title: "Something went wrong!",
-                  subtext: "Looks like there're some error occured!",
-                ));
+                print(snapshot.error);
+                return Center(
+                  child: NoRecipeText(
+                    title: "Something went wrong!",
+                    subtext: "Error: ${snapshot.error}",
+
+                  ),
+                );
               }
 
               if (!snapshot.hasData) {
                 return const Center(
-                    child: NoRecipeText(
-                  title: "Empty book!",
-                  subtext:
-                      "Currently, there're only blank pages in our database.",
-                ));
+                  child: NoRecipeText(
+                    title: "Empty book!",
+                    subtext:
+                    "Currently, there're only blank pages in our database.",
+                  ),
+                );
               }
 
               return Padding(
@@ -69,10 +98,13 @@ class _FindRecipePageState extends State<FindRecipePage> {
                 child: ListView.builder(
                   itemCount: snapshot.data!.docs.length,
                   itemBuilder: (BuildContext context, int index) {
-                    Recipe data = Recipe.fromJson(snapshot.data!.docs[index]
-                        .data() as Map<String, dynamic>);
-                    return RecipeTile<DownloadedStorage>(data,
-                        isDownload: true);
+                    Recipe data = Recipe.fromJson(
+                      snapshot.data!.docs[index].data() as Map<String, dynamic>,
+                    );
+                    return RecipeTile<DownloadedStorage>(
+                      data,
+                      isDownload: true,
+                    );
                   },
                 ),
               );
