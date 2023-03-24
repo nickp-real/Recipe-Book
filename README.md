@@ -1,5 +1,5 @@
 # Recipe Book
 
-mostly must have features except edit recipe
+Recipe Book application
 
 ## Getting Started
