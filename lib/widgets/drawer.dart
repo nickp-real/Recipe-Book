@@ -34,21 +34,18 @@ class MyDrawer extends StatelessWidget {
     }
 
     void handleOnFindRecipesClick() {
-      if (currentRoute.settings.name != '/find') {
-        Navigator.of(context).pushReplacementNamed('/find');
-      }
+      if (currentRoute.settings.name == '/find') return;
+      Navigator.of(context).pushReplacementNamed('/find');
     }
 
     void handleOnYourRecipesClick() {
-      if (currentRoute.settings.name != '/') {
-        Navigator.of(context).pushReplacementNamed('/');
-      }
+      if (currentRoute.settings.name == '/') return;
+      Navigator.of(context).pushReplacementNamed('/');
     }
 
     void handleOnDownloadedRecipesClick() {
-      if (currentRoute.settings.name != '/downloaded') {
-        Navigator.of(context).pushReplacementNamed('/downloaded');
-      }
+      if (currentRoute.settings.name == '/downloaded') return;
+      Navigator.of(context).pushReplacementNamed('/downloaded');
     }
 
     return Drawer(

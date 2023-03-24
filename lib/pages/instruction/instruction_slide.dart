@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class InstruntionSlideScreen extends StatefulWidget {
   final List<dynamic> instructions;
@@ -25,13 +26,28 @@ class _InstruntionSlideScreenState extends State<InstruntionSlideScreen> {
               border: Border.all(color: Colors.grey),
               borderRadius: BorderRadius.circular(10),
             ));
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeRight,
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+  }
+
+  @override
+  void dispose() {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('วิธีทำ'),
+        title: const Text('Instructions'),
       ),
       body: widget.instructions.isNotEmpty
           ? PageView.builder(
