@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:receipe_book/model/recipe.dart';
 import 'package:receipe_book/services/storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 /// This class represents a storage that saves downloaded recipes using SharedPreferences.
 ///
 /// It implements the Storage interface and notifies its listeners when there is a change in the data.
@@ -38,8 +39,9 @@ class DownloadedStorage extends ChangeNotifier implements Storage {
   @override
   bool add(Recipe recipe) {
     if (_recipes
-        .any((oldRecipe) => jsonEncode(oldRecipe) == jsonEncode(recipe)))
+        .any((oldRecipe) => jsonEncode(oldRecipe) == jsonEncode(recipe))) {
       return false;
+    }
 
     _recipes.add(recipe);
     _update();

@@ -190,6 +190,8 @@ class _LoginPageState extends State<LoginPage> {
   }
 }
 
+/// The TextFormField widget in [LoginPage] widget
+/// use for email entry
 class _EntryField extends StatelessWidget {
   const _EntryField(
       {required this.controller, required this.label, required this.validator});
@@ -226,6 +228,8 @@ class _EntryField extends StatelessWidget {
   }
 }
 
+/// The TextFormField widget in [LoginPage] widget
+/// use for password entry
 class _PasswordEntryField extends StatelessWidget {
   const _PasswordEntryField(
       {required this.controller, required this.label, required this.validator});
