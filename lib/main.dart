@@ -1,3 +1,15 @@
+/// This file contains the main application entry point and widget for the Recipe Book Flutter application.
+///
+/// The application utilizes the Flutter framework and several plugins such as firebase_core, provider, and flutter/material.
+///
+/// The main method initializes the Flutter application and sets the preferred screen orientation. It also creates a [MultiProvider] widget
+/// that provides instances of [RecipeStorage] and [DownloadedStorage] to the rest of the application.
+///
+/// The [MyApp] class is the root widget of the application and returns a [MaterialApp] widget that defines the application's routes and
+/// theme data.
+///
+/// The application has four routes: /, /login, /find, and /downloaded. The default route is /. The routes are mapped to the
+/// corresponding pages defined in the pages directory.
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';

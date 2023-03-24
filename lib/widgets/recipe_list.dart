@@ -1,3 +1,19 @@
+/// A widget that displays a list of recipes based on a query.
+///
+/// This widget takes a type parameter T which extends the Storage class
+/// and is used to specify the type of storage to fetch recipes from.
+/// The query parameter is used to filter the recipes displayed based on
+/// recipe name, tags, and author.
+///
+/// This widget uses the Consumer widget from the provider package to
+/// listen for changes in the recipes and rebuild the UI accordingly.
+/// The FutureBuilder widget is used to fetch the recipes from storage.
+/// Once the future is complete, the query is applied to the list of recipes
+/// to filter them, and a ListView is created to display the filtered
+/// recipes using the RecipeTile widget.
+/// If there are no recipes to display, a NoRecipeText widget is shown with
+/// a message depending on whether a query is applied or not.
+///
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:receipe_book/model/recipe.dart';

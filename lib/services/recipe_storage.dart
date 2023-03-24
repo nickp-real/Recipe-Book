@@ -1,3 +1,9 @@
+/// A class that implements the Storage interface to handle saving and retrieving recipes.
+///
+/// This class uses the SharedPreferences package to store recipes as JSON strings in the device's
+/// persistent storage. It provides methods to add, edit and remove recipes, as well as fetch a list of
+/// all saved recipes.
+///
 import 'dart:convert';
 
 import 'package:flutter/material.dart';

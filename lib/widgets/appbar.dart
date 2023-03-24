@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+///The AppBar widget that can use for all the page of the Application.
 class MainAppBar extends StatefulWidget {
   const MainAppBar(
       {super.key,
@@ -18,6 +18,7 @@ class MainAppBar extends StatefulWidget {
 class _MainAppBarState extends State<MainAppBar> {
   final _searchController = TextEditingController();
 
+  ///Clear the search value in search bar
   void clearSearch() {
     _searchController.clear();
     widget.onSearch('');

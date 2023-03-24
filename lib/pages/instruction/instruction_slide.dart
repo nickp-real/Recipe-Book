@@ -1,3 +1,6 @@
+/// This file contains the InstructionSlideScreen widget, which is responsible for displaying a instruction in slide view
+/// for only one instruction for each slide.
+/// The Instruction that show in this page is came from the recipe that click have choose before
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
