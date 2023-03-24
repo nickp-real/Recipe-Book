@@ -1,4 +1,5 @@
-/// authorized user including singin and register
+/// Authorized user including singin and register by firebase_auth
+/// This class provided signin, createUser, and signout
 import 'package:firebase_auth/firebase_auth.dart';
 
 class Auth {

@@ -21,7 +21,8 @@ class DownloadedPage extends StatefulWidget {
 class _DownloadedPageState extends State<DownloadedPage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   String query = '';
-/// onSearch function is use to keep the query text form user
+
+  /// onSearch function is use to keep the query text form user
   void _onSearch(String searchText) {
     setState(() {
       query = searchText;

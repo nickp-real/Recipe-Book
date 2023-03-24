@@ -21,6 +21,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   String query = '';
+
   /// this function will be used after the user click on add icon and then it will navigate user to the AddOrEditRecipePage
   void _navigateToAddRecipePage() {
     Navigator.push(
@@ -29,6 +30,7 @@ class _MyHomePageState extends State<MyHomePage> {
           builder: (context) => const AddOrEditRecipePage<RecipeStorage>()),
     );
   }
+
   /// onSearch function can be use to search your own Recipe
   void _onSearch(String searchText) {
     setState(() {

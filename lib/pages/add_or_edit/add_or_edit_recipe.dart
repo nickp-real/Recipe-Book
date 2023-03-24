@@ -1,13 +1,4 @@
 /// This dart file defines a widget, AddOrEditRecipePage, that provides a form for creating or editing a recipe. The page is built using Flutter and Provider package.
-///
-/// The AddOrEditRecipePage widget is a StatefulWidget that has a recipe property of type Recipe. This widget displays a form that contains several TextFormField widgets that allow the user to enter data for a recipe's name, image URL, tags, ingredients, and instructions.
-///
-/// The ListForm widget is a stateful widget that displays a list of TextFormField widgets, used for the tags, ingredients, and instructions fields in the AddOrEditRecipePage form. It provides a button to add more fields and a button to remove them.
-///
-/// The AddOrEditRecipePage widget is responsible for saving the recipe data and updating the storage. It listens to the storage provider using the Consumer widget from the Provider package, which allows it to access the add and edit methods provided by the storage provider. The widget shows a snackbar to the user when the recipe is saved successfully.
-///
-/// The AddOrEditRecipePage widget has an AppBar with a title that changes based on whether the user is creating or editing a recipe. The AppBar also has a save button that saves the recipe data when clicked. Once the recipe is saved successfully, the user is taken back to the menu page or the edited recipe page, depending on the use case.
-///
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:receipe_book/model/recipe.dart';
@@ -15,6 +6,12 @@ import 'package:receipe_book/pages/menu/menu.dart';
 import 'package:receipe_book/services/storage.dart';
 import 'package:receipe_book/widgets/custom_snackbar.dart';
 
+/// The AddOrEditRecipePage widget is a StatefulWidget that has a recipe property of type Recipe. This widget displays a form that contains several TextFormField widgets that allow the user to enter data for a recipe's name, image URL, tags, ingredients, and instructions.
+///
+/// The AddOrEditRecipePage widget is responsible for saving the recipe data and updating the storage. It listens to the storage provider using the Consumer widget from the Provider package, which allows it to access the add and edit methods provided by the storage provider. The widget shows a snackbar to the user when the recipe is saved successfully.
+///
+/// The AddOrEditRecipePage widget has an AppBar with a title that changes based on whether the user is creating or editing a recipe. The AppBar also has a save button that saves the recipe data when clicked. Once the recipe is saved successfully, the user is taken back to the menu page or the edited recipe page, depending on the use case.
+///
 class AddOrEditRecipePage<T extends Storage> extends StatefulWidget {
   const AddOrEditRecipePage({Key? key, this.recipe}) : super(key: key);
 
@@ -72,6 +69,9 @@ class _AddOrEditRecipePageState<T extends Storage>
   @override
   Widget build(BuildContext context) {
     return Consumer<T>(builder: (_, recipes, __) {
+      /// on user click save
+      /// if the current state is add, it will add to the RecipeStorage
+      /// if the current state is edit, it will set the current recipe to new recipes in RecipeStorage
       void onSave() async {
         final name = _nameController.text;
         final instructions =
@@ -138,12 +138,12 @@ class _AddOrEditRecipePageState<T extends Storage>
                       },
                     ),
                     const SizedBox(height: 16),
-                    ListForm(fields: _tagControllers, label: 'Category'),
+                    _ListForm(fields: _tagControllers, label: 'Category'),
                     const SizedBox(height: 16),
-                    ListForm(
+                    _ListForm(
                         fields: _ingredientControllers, label: 'Ingredient'),
                     const SizedBox(height: 16),
-                    ListForm(
+                    _ListForm(
                         fields: _instructionControllers, label: 'Instruction'),
                     const SizedBox(height: 16),
                   ],
@@ -155,23 +155,31 @@ class _AddOrEditRecipePageState<T extends Storage>
   }
 }
 
-class ListForm extends StatefulWidget {
-  const ListForm({required this.fields, required this.label, super.key});
+/// The _ListForm widget is a stateful widget that displays a list of TextFormField widgets
+/// used for the tags, ingredients, and instructions fields in the
+/// AddOrEditRecipePage form. It provides a button to add more fields and a button to remove them.
+class _ListForm extends StatefulWidget {
+  const _ListForm({
+    required this.fields,
+    required this.label,
+  });
 
   final List<TextEditingController> fields;
   final String label;
 
   @override
-  State<ListForm> createState() => _ListFormState();
+  State<_ListForm> createState() => _ListFormState();
 }
 
-class _ListFormState extends State<ListForm> {
+class _ListFormState extends State<_ListForm> {
+  /// add a [TextEditingController] to the list.
   void _addField() {
     setState(() {
       widget.fields.add(TextEditingController());
     });
   }
 
+  /// remove a [TextEditingController] at the index from the list.
   void _removeField(int index) {
     setState(() {
       widget.fields.removeAt(index);
