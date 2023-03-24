@@ -1,22 +1,8 @@
 import 'package:flutter/material.dart';
-/// The Sncakbar Widget the can be use in all Page in Application for specific propose.
-class MySnackbar {
-  SnackBar snackbar({required Widget child}) {
-    return SnackBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        content: Card(
-          child: Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                  color: Colors.red.shade400,
-                  borderRadius: BorderRadius.circular(10)),
-              child: child),
-        ));
-  }
-}
 
-class CustomSnackbar extends MySnackbar {
+/// The custom styled sncakbar Widget the can be use in all Page in Application for specific propose.
+/// Have two customed snackbar, success and error
+class CustomSnackbar {
   static SnackBar _snackbar({required Widget child, required Color color}) {
     return SnackBar(
         backgroundColor: Colors.transparent,

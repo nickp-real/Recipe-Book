@@ -26,7 +26,6 @@ class MenuPage<T extends Storage> extends StatelessWidget {
   final bool isDownload;
 
   @override
-
   Widget build(BuildContext context) {
     ///This function will navigate the user into the ShoppingCartScreen
     void handleOnShoppingCartClick() {
@@ -37,7 +36,8 @@ class MenuPage<T extends Storage> extends StatelessWidget {
                 ShoppingCartScreen(ingredients: recipe.ingredients)),
       );
     }
-  /// This Function will navigate the user into the InstructionSlideScreen
+
+    /// This Function will navigate the user into the InstructionSlideScreen
     void handleOnInstructionClick() {
       Navigator.push(
         context,
@@ -48,6 +48,8 @@ class MenuPage<T extends Storage> extends StatelessWidget {
     }
 
     return Consumer<T>(builder: (_, recipes, __) {
+      /// Handle on user press delete in the kebab
+      /// show dialog popup to confirm the user
       void onDeleteSelect() {
         showDialog(
             context: context,
