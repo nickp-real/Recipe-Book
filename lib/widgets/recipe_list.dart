@@ -17,6 +17,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:receipe_book/model/recipe.dart';
+import 'package:receipe_book/search.dart';
 import 'package:receipe_book/services/storage.dart';
 import 'package:receipe_book/widgets/no_recipe_text.dart';
 import 'package:receipe_book/widgets/recipe_tile.dart';
@@ -34,13 +35,7 @@ class RecipeList<T extends Storage> extends StatelessWidget {
             future: recipes.fetch(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.done) {
-                final queryData = query.isEmpty
-                    ? snapshot.data!
-                    : snapshot.data!.where((recipe) =>
-                        recipe.name.contains(query) ||
-                        recipe.tags
-                            .any((tag) => tag.toString().contains(query)) ||
-                        recipe.author.contains(query));
+                final queryData = Search.query(snapshot.data!, query);
 
                 return queryData.isNotEmpty
                     ? Padding(
