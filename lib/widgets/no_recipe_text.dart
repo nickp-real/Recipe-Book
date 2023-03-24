@@ -1,3 +1,7 @@
+/// A widget that displays a title and subtext when there are no recipes available.
+///
+/// This widget takes in a required [title] and [subtext] as parameters to display the text.
+/// It is designed to be used when there are no recipes available to display in a list or grid.
 import 'package:flutter/material.dart';
 
 class NoRecipeText extends StatelessWidget {

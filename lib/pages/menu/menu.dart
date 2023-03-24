@@ -1,3 +1,6 @@
+/// This widget represents the menu page for a recipe.
+/// It displays the recipe's image and information, and allows for editing, sharing, and deleting the recipe.
+/// It also provides options to view the recipe's instructions and add its ingredients to a shopping list.
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -23,7 +26,9 @@ class MenuPage<T extends Storage> extends StatelessWidget {
   final bool isDownload;
 
   @override
+
   Widget build(BuildContext context) {
+    ///This function will navigate the user into the ShoppingCartScreen
     void handleOnShoppingCartClick() {
       Navigator.push(
         context,
@@ -32,7 +37,7 @@ class MenuPage<T extends Storage> extends StatelessWidget {
                 ShoppingCartScreen(ingredients: recipe.ingredients)),
       );
     }
-
+  /// This Function will navigate the user into the InstructionSlideScreen
     void handleOnInstructionClick() {
       Navigator.push(
         context,

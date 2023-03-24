@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-
+/// The ShoppingCartScreen is use to display the Ingredients List of the Recipe and let the user can click each Ingredient to check that they already had that Ingredient or not
+/// After tapped in the Ingredient , the color will change to the Green that show that you already had that ingredient
 class ShoppingCartScreen extends StatefulWidget {
   final List<dynamic> ingredients;
 

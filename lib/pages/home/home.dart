@@ -1,3 +1,8 @@
+/// This file contains the HomePage widget, which is responsible for displaying a list of recipes of your own recipe
+///
+/// that can be searched through using a search bar.
+/// The Recipe that show in this page is came from the local storage
+/// your own Recipe will show on this page
 import 'package:flutter/material.dart';
 import 'package:receipe_book/auth.dart';
 import 'package:receipe_book/pages/add_or_edit/add_or_edit_recipe.dart';
@@ -16,7 +21,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   String query = '';
-
+  /// this function will be used after the user click on add icon and then it will navigate user to the AddOrEditRecipePage
   void _navigateToAddRecipePage() {
     Navigator.push(
       context,
@@ -24,7 +29,7 @@ class _MyHomePageState extends State<MyHomePage> {
           builder: (context) => const AddOrEditRecipePage<RecipeStorage>()),
     );
   }
-
+  /// onSearch function can be use to search your own Recipe
   void _onSearch(String searchText) {
     setState(() {
       query = searchText;

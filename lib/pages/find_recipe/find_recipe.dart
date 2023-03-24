@@ -1,3 +1,6 @@
+/// This file contains the FindRecipePage widget, which is responsible for displaying a list of recipes
+/// that can be searched through using a search bar.
+/// The Recipe that show in this page is came from the firebase firestore
 import 'package:flutter/material.dart';
 import 'package:receipe_book/auth.dart';
 import 'package:receipe_book/model/recipe.dart';
@@ -24,7 +27,7 @@ class _FindRecipePageState extends State<FindRecipePage> {
     super.initState();
     _stream = FirebaseFirestore.instance.collectionGroup('recipes').snapshots();
   }
-
+  /// get the value of user input and query the data in database
   void onSearch(String searchText) {
     setState(() {
       if (searchText.isEmpty) {

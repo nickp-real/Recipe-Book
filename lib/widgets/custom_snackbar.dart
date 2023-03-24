@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+/// The Sncakbar Widget the can be use in all Page in Application for specific propose.
 class MySnackbar {
   SnackBar snackbar({required Widget child}) {
     return SnackBar(

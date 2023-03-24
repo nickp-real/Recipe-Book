@@ -1,3 +1,13 @@
+/// A widget that represents a single recipe tile in the recipe list.
+///
+/// Displays a card with the recipe image, name, tags, and author. The recipe can be tapped to navigate to the menu page, which
+/// shows the recipe ingredients and instructions. If the isDownload flag is true, then the recipe can also be downloaded to the
+/// user's local storage by clicking the download icon.
+///
+/// This widget uses a Consumer to listen to changes in the Storage instance, and to add the recipe to the DownloadedStorage
+/// if the download icon is clicked.
+///
+/// The toMenu method takes a Recipe as an argument and navigates to the MenuPage, passing the recipe as a parameter.
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:receipe_book/model/recipe.dart';

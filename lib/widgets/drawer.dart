@@ -1,9 +1,12 @@
+/// This widget represents a custom drawer that displays a list of items and actions
+/// that can be performed by the user. It contains navigation links to different pages
+/// within the app and a login/logout button. If the user is logged in, it will display
+/// a welcome message with their email address.
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:receipe_book/auth.dart';
 import 'package:receipe_book/pages/login/login.dart';
 import 'package:receipe_book/widgets/custom_snackbar.dart';
-
 class MyDrawer extends StatelessWidget {
   const MyDrawer({
     super.key,
@@ -32,17 +35,17 @@ class MyDrawer extends StatelessWidget {
         Navigator.pop(context);
       }
     }
-
+  /// Navigate to the find page
     void handleOnFindRecipesClick() {
       if (currentRoute.settings.name == '/find') return;
       Navigator.of(context).pushReplacementNamed('/find');
     }
-
+    /// Navigate to the YourRecipes page
     void handleOnYourRecipesClick() {
       if (currentRoute.settings.name == '/') return;
       Navigator.of(context).pushReplacementNamed('/');
     }
-
+    /// Navigate to the Downloaded P page
     void handleOnDownloadedRecipesClick() {
       if (currentRoute.settings.name == '/downloaded') return;
       Navigator.of(context).pushReplacementNamed('/downloaded');

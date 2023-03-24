@@ -1,3 +1,4 @@
+/// class for Validator Email and Password
 class Validator {
   static String? email(String? value) {
     final pattern = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
