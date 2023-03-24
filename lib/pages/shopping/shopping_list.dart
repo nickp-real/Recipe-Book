@@ -23,7 +23,7 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('รายชื่อวัตถุดิบ'),
+        title: const Text('Shopping List'),
       ),
       body: widget.ingredients.isNotEmpty
           ? Padding(

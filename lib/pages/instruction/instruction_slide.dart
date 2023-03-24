@@ -47,7 +47,7 @@ class _InstruntionSlideScreenState extends State<InstruntionSlideScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('วิธีทำ'),
+        title: const Text('Instructions'),
       ),
       body: widget.instructions.isNotEmpty
           ? PageView.builder(

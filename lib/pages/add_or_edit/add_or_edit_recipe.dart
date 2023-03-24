@@ -61,95 +61,87 @@ class _AddOrEditRecipePageState<T extends Storage>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          title: Text(widget.recipe != null ? 'Edit Recipe' : 'Add Recipe'),
-        ),
-        body: Consumer<T>(
-          builder: (_, recipes, __) {
-            void onSave() async {
-              final name = _nameController.text;
-              final instructions =
-                  _instructionControllers.map((c) => c.text).toList();
-              final imageUrl = _imageUrlController.text;
-              final tags = _tagControllers.map((c) => c.text).toList();
-              final ingredients =
-                  _ingredientControllers.map((c) => c.text).toList();
+    return Consumer<T>(builder: (_, recipes, __) {
+      void onSave() async {
+        final name = _nameController.text;
+        final instructions =
+            _instructionControllers.map((c) => c.text).toList();
+        final imageUrl = _imageUrlController.text;
+        final tags = _tagControllers.map((c) => c.text).toList();
+        final ingredients = _ingredientControllers.map((c) => c.text).toList();
 
-              final recipe =
-                  Recipe(name, imageUrl, tags, ingredients, instructions);
+        final recipe = Recipe(name, imageUrl, tags, ingredients, instructions);
 
-              if (widget.recipe != null) {
-                recipes.edit(widget.recipe!, recipe);
-              } else {
-                recipes.add(recipe);
-              }
-              ScaffoldMessenger.of(context).showSnackBar(CustomSnackbar.success(
-                  message:
-                      "${widget.recipe != null ? "Edit" : "Add"} $name success."));
-              Navigator.pop(context);
-              if (widget.recipe != null) {
-                Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => MenuPage<T>(recipe)));
-              }
-            }
+        if (widget.recipe != null) {
+          recipes.edit(widget.recipe!, recipe);
+        } else {
+          recipes.add(recipe);
+        }
+        ScaffoldMessenger.of(context).showSnackBar(CustomSnackbar.success(
+            message:
+                "${widget.recipe != null ? "Edit" : "Add"} $name success."));
+        Navigator.pop(context);
+        if (widget.recipe != null) {
+          Navigator.pushReplacement(context,
+              MaterialPageRoute(builder: (context) => MenuPage<T>(recipe)));
+        }
+      }
 
-            return SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      TextFormField(
-                        controller: _nameController,
-                        decoration: const InputDecoration(labelText: 'Name'),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter a name';
-                          }
-                          return null;
-                        },
-                      ),
-                      TextFormField(
-                        controller: _imageUrlController,
-                        decoration:
-                            const InputDecoration(labelText: 'Image URL'),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter an image URL';
-                          }
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 16),
-                      ListForm(fields: _tagControllers, label: 'Category'),
-                      const SizedBox(height: 16),
-                      ListForm(
-                          fields: _ingredientControllers, label: 'Ingredient'),
-                      const SizedBox(height: 16),
-                      ListForm(
-                          fields: _instructionControllers,
-                          label: 'Instruction'),
-                      const SizedBox(height: 16),
-                      ElevatedButton(
-                        onPressed: () {
-                          if (_formKey.currentState!.validate()) {
-                            onSave();
-                          }
-                        },
-                        child: const Text('Save Recipe'),
-                      ),
-                    ],
-                  ),
+      return Scaffold(
+          appBar: AppBar(
+            title: Text(widget.recipe != null ? 'Edit Recipe' : 'Add Recipe'),
+            actions: [
+              IconButton(
+                  onPressed: () {
+                    if (!_formKey.currentState!.validate()) return;
+                    onSave();
+                  },
+                  icon: const Icon(Icons.save_rounded))
+            ],
+          ),
+          body: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    TextFormField(
+                      controller: _nameController,
+                      decoration: const InputDecoration(labelText: 'Name'),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter a name';
+                        }
+                        return null;
+                      },
+                    ),
+                    TextFormField(
+                      controller: _imageUrlController,
+                      decoration: const InputDecoration(labelText: 'Image URL'),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter an image URL';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    ListForm(fields: _tagControllers, label: 'Category'),
+                    const SizedBox(height: 16),
+                    ListForm(
+                        fields: _ingredientControllers, label: 'Ingredient'),
+                    const SizedBox(height: 16),
+                    ListForm(
+                        fields: _instructionControllers, label: 'Instruction'),
+                    const SizedBox(height: 16),
+                  ],
                 ),
               ),
-            );
-          },
-        ));
+            ),
+          ));
+    });
   }
 }
 

@@ -330,21 +330,24 @@ class _Ingredients extends StatelessWidget {
               fontWeight: FontWeight.bold, color: Colors.black, fontSize: 18),
         ),
         const SizedBox(height: 10),
-        ingredients.isNotEmpty
-            ? Wrap(
-                direction: Axis.vertical,
-                spacing: 4.0,
-                runSpacing: 4.0,
-                children: ingredients
-                    .map((ingredient) => Text(
-                          '\u2022 $ingredient',
-                          style: const TextStyle(
-                            fontSize: 16,
-                            color: Colors.black87,
-                          ),
-                        ))
-                    .toList())
-            : const Text("No ingredient provided."),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8),
+          child: ingredients.isNotEmpty
+              ? Wrap(
+                  direction: Axis.vertical,
+                  spacing: 4.0,
+                  runSpacing: 4.0,
+                  children: ingredients
+                      .map((ingredient) => Text(
+                            '\u2022 $ingredient',
+                            style: const TextStyle(
+                              fontSize: 16,
+                              color: Colors.black87,
+                            ),
+                          ))
+                      .toList())
+              : const Text("No ingredient provided."),
+        ),
       ],
     );
   }
