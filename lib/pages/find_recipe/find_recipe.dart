@@ -4,6 +4,7 @@
 import 'package:flutter/material.dart';
 import 'package:receipe_book/auth.dart';
 import 'package:receipe_book/model/recipe.dart';
+import 'package:receipe_book/search.dart';
 import 'package:receipe_book/services/downloaded_storage.dart';
 import 'package:receipe_book/widgets/appbar.dart';
 import 'package:receipe_book/widgets/drawer.dart';
@@ -27,19 +28,11 @@ class _FindRecipePageState extends State<FindRecipePage> {
     super.initState();
     _stream = FirebaseFirestore.instance.collectionGroup('recipes').snapshots();
   }
+
   /// get the value of user input and query the data in database
   void onSearch(String searchText) {
     setState(() {
-      if (searchText.isEmpty) {
-        _stream =
-            FirebaseFirestore.instance.collectionGroup('recipes').snapshots();
-      } else {
-        _stream = FirebaseFirestore.instance
-            .collectionGroup('recipes')
-            .where('name', isGreaterThanOrEqualTo: searchText)
-            .where('name', isLessThan: '${searchText}z')
-            .snapshots();
-      }
+      _stream = Search.firebaseQuery(searchText);
     });
   }
 
